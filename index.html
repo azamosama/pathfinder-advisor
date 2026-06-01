@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfinder Advisor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0D1B2A;
+            --gold: #D4A843;
+            --cream: #FDFAF4;
+            --white: #FFFFFF;
+            --error: #FFB703;
+            --green: #2A9D8F;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--navy);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'DM Serif Display', serif;
+            font-weight: 400;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--navy);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            background-color: rgba(212, 168, 67, 0.1);
+            color: var(--gold);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid var(--gold);
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        /* Form */
+        .card {
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Custom major autocomplete dropdown */
+        .major-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 2px);
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 9999;
+            list-style: none;
+            padding: 0.35rem 0;
+            margin: 0;
+        }
+
+        .major-option {
+            padding: 0.65rem 1rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--navy);
+            transition: background 0.15s;
+        }
+
+        .major-option:hover {
+            background: rgba(205, 155, 29, 0.12);
+            font-weight: 600;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--navy);
+        }
+
+        input[type="text"], textarea {
+            padding: 0.75rem 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            background-color: var(--cream);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Timeline Selector */
+        .timeline-selector {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .timeline-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #E2E8F0;
+            background-color: var(--cream);
+            color: var(--navy);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timeline-btn.active {
+            background-color: var(--navy);
+            color: var(--white);
+            border-color: var(--navy);
+        }
+
+        .timeline-btn:hover:not(.active) {
+            background-color: #E2E8F0;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background-color: var(--gold);
+            color: var(--navy);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: transform 0.1s, background-color 0.2s;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            background-color: #C39732;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Output Section */
+        #output-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Loading State */
+        #loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(212, 168, 67, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        #loading-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--navy);
+            font-family: 'DM Serif Display', serif;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #E2E8F0;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748B;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--navy);
+            background-color: rgba(13, 27, 42, 0.05);
+        }
+
+        .tab-btn.active {
+            color: var(--navy);
+            border-bottom: 3px solid var(--gold);
+            margin-bottom: -10px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Schedule Styles */
+        .legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--cream);
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .color-req { background-color: var(--navy); }
+        .color-elec { background-color: var(--gold); }
+        .color-gen { background-color: var(--green); }
+
+        .year-block {
+            margin-bottom: 3rem;
+        }
+
+        .year-title {
+            font-size: 1.75rem;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .semesters-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .semester-col {
+            background-color: var(--cream);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .semester-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--navy);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .course-item {
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: var(--white);
+            border-left: 4px solid var(--navy);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-item.elec { border-left-color: var(--gold); }
+        .course-item.gen { border-left-color: var(--green); }
+
+        .schedule-matrix {
+            display: grid;
+            grid-template-columns: 140px repeat(var(--cols, 4), 1fr);
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+        
+        .matrix-header {
+            font-size: 1.5rem;
+            color: var(--navy);
+            font-family: 'DM Serif Display', serif;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 0.5rem;
+            align-self: end;
+        }
+
+        .matrix-row-label {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            align-self: center;
+            font-family: 'DM Serif Display', serif;
+        }
+
+        .matrix-cell {
+            background-color: var(--cream);
+            border-radius: 12px;
+            padding: 1rem;
+            height: 100%;
+            border: 1px solid #E2E8F0;
+        }
+
+        .empty-cell {
+            background: transparent;
+            border: none;
+        }
+
+        /* Grids for cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background-color: var(--cream);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.25rem;
+            color: var(--navy);
+            margin: 0;
+        }
+
+        .info-card .meta {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Tips */
+        .tips-list {
+            list-style: none;
+            counter-reset: tip-counter;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tips-list li {
+            position: relative;
+            padding-left: 3rem;
+            font-size: 1.1rem;
+            background-color: var(--cream);
+            padding: 1.5rem 1.5rem 1.5rem 4rem;
+            border-radius: 12px;
+        }
+
+        .tips-list li::before {
+            counter-increment: tip-counter;
+            content: counter(tip-counter);
+            position: absolute;
+            left: 1.25rem;
+            top: 1.5rem;
+            width: 32px;
+            height: 32px;
+            background-color: var(--gold);
+            color: var(--navy);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: 'DM Serif Display', serif;
+        }
+
+        /* Error state */
+        .error-card {
+            background-color: rgba(255, 183, 3, 0.1);
+            border-left: 4px solid var(--error);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .error-title {
+            color: #B45309;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Section headers */
+        .section-header {
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+            color: var(--navy);
+            border-bottom: 1px solid #E2E8F0;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-header:first-child {
+            margin-top: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid, .semesters-grid {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Pathfinder Advisor</h1>
+        <span class="badge">Powered by Gemini</span>
+    </header>
+
+    <main>
+        <!-- Input Form -->
+        <div class="card" id="form-container">
+            <h2 style="margin-bottom: 1.5rem; color: var(--navy);">Design Your Academic Journey</h2>
+            <form id="advisor-form">
+                <div class="form-grid">
+                    <div class="form-group" style="position:relative;">
+                        <label for="university">University *</label>
+                        <input type="text" id="university" required placeholder="e.g. University of Michigan" autocomplete="off">
+                        <ul id="university-dropdown" class="major-dropdown"></ul>
+                    </div>
+                    <div class="form-group" style="position:relative;">
+                        <label for="major">Major *</label>
+                        <input type="text" id="major" required placeholder="Select university first" autocomplete="off">
+                        <ul id="major-dropdown" class="major-dropdown"></ul>
+                    </div>
+                    <div class="form-group">
+                        <label for="minor">Minor (Optional)</label>
+                        <input type="text" id="minor" placeholder="e.g. Public Health">
+                    </div>
+                    <div class="form-group">
+                        <label for="track">Track (Optional)</label>
+                        <input type="text" id="track" placeholder="e.g. Pre-Medicine, Pre-Law">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Graduation Timeline</label>
+                        <div class="timeline-selector" id="timeline">
+                            <button type="button" class="timeline-btn" data-years="3">3 Years</button>
+                            <button type="button" class="timeline-btn active" data-years="4">4 Years</button>
+                            <button type="button" class="timeline-btn" data-years="5">5 Years</button>
+                            <button type="button" class="timeline-btn" data-years="6">6 Years</button>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="notes">Additional Notes (Optional)</label>
+                        <textarea id="notes" placeholder="e.g. Planning to study abroad junior year, interested in undergraduate research..."></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn" id="submit-btn">Generate My Plan</button>
+            </form>
+        </div>
+
+        <!-- Output Section -->
+        <div id="output-container">
+            <!-- Loading State -->
+            <div class="card" id="loading-state">
+                <div class="spinner"></div>
+                <div id="loading-text">Consulting the curriculum...</div>
+            </div>
+
+            <!-- Results -->
+            <div class="card" id="output-section">
+                
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('schedule')">N-Year Schedule</button>
+                    <button class="tab-btn" onclick="switchTab('electives')">Electives</button>
+                    <button class="tab-btn" onclick="switchTab('orgs-fairs')">Orgs & Fairs</button>
+                    <button class="tab-btn" onclick="switchTab('exams')">Professional Exams</button>
+                    <button class="tab-btn" onclick="switchTab('tips')">Advisor Tips</button>
+                </div>
+
+                <!-- Tab 1: Schedule -->
+                <div id="tab-schedule" class="tab-content active">
+                    <div class="error-card" id="error-card">
+                        <div class="error-title">Optimization Halted</div>
+                        <div id="error-message">An error occurred while generating your plan. Please try again.</div>
+                    </div>
+
+                    <div class="disclaimer-alert" style="background-color: rgba(255, 183, 3, 0.15); border-left: 4px solid var(--gold); padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 2rem; color: var(--navy);">
+                        <strong>⚠️ Advisory Only:</strong> This is an AI-generated tentative roadmap based on web-scraped data. It may not reflect the most recent prerequisite chains, degree requirements, or specific graduation rules. Always consult your official university academic advisor and degree audit system before registering for classes.
+                    </div>
+
+                    <div class="legend" id="schedule-legend">
+                        <div class="legend-item"><div class="color-box color-req"></div> Major/Track Requirement</div>
+                        <div class="legend-item"><div class="color-box color-gen"></div> Gen-Ed/Core</div>
+                        <div class="legend-item"><div class="color-box color-elec"></div> Elective</div>
+                    </div>
+                    <div id="schedule-content"></div>
+                </div>
+
+                <!-- Tab 2: Electives -->
+                <div id="tab-electives" class="tab-content">
+                    <div class="cards-grid" id="electives-content"></div>
+                </div>
+
+                <!-- Tab 3: Orgs & Fairs -->
+                <div id="tab-orgs-fairs" class="tab-content">
+                    <h3 class="section-header">Career Fairs & Events</h3>
+                    <div class="cards-grid" id="fairs-content" style="margin-bottom: 3rem;"></div>
+
+                    <h3 class="section-header">Campus Organizations</h3>
+                    <div class="cards-grid" id="orgs-content"></div>
+                </div>
+
+                <!-- Tab 4: Professional Exams -->
+                <div id="tab-exams" class="tab-content">
+                    <div class="cards-grid" id="exams-content"></div>
+                </div>
+
+                <!-- Tab 5: Tips -->
+                <div id="tab-tips" class="tab-content">
+                    <ul class="tips-list" id="tips-content"></ul>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // API Key will be injected by the environment
+        const API_KEY = window.GEMINI_API_KEY || "AIzaSyCrMKtssyxEGgx5kl3PXY82noVBI_pEbUs"; 
+
+        // State
+        let selectedYears = 4;
+        let planData = null;
+
+        // UI Elements
+        const form = document.getElementById('advisor-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const timelineBtns = document.querySelectorAll('.timeline-btn');
+        const loadingState = document.getElementById('loading-state');
+        const loadingText = document.getElementById('loading-text');
+        const outputSection = document.getElementById('output-section');
+        const errorCard = document.getElementById('error-card');
+        const errorMessage = document.getElementById('error-message');
+        const scheduleLegend = document.getElementById('schedule-legend');
+
+        // Loading Messages
+        const loadingMessages = [
+            "Consulting the curriculum...",
+            "Mapping required coursework...",
+            "Researching professional exams...",
+            "Assembling your graduation roadmap..."
+        ];
+
+        // ── University Custom Autocomplete ────────────────────────────────
+        const universityInput = document.getElementById('university');
+        const universityDropdown = document.getElementById('university-dropdown');
+        let debounceTimer;
+        let uniResults = [];
+
+        function showUniversityDropdown(names) {
+            if (!names.length) { universityDropdown.style.display = 'none'; return; }
+            universityDropdown.innerHTML = names.map(n =>
+                `<li class="major-option" data-value="${n}">${n}</li>`
+            ).join('');
+            universityDropdown.style.display = 'block';
+        }
+
+        universityInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            const query = e.target.value.trim();
+            if (query.length < 3) { universityDropdown.style.display = 'none'; return; }
+
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(`http://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    uniResults = [...new Set(data.map(u => u.name))].slice(0, 10);
+                    showUniversityDropdown(uniResults);
+                } catch (err) {
+                    console.error('University autocomplete error:', err);
+                }
+            }, 300);
+        });
+
+        universityDropdown.addEventListener('mousedown', (e) => {
+            const li = e.target.closest('.major-option');
+            if (!li) return;
+            universityInput.value = li.dataset.value;
+            universityDropdown.style.display = 'none';
+            // Trigger major load for chosen university
+            loadMajorsForUniversity(li.dataset.value);
+        });
+
+        // ── Custom Major Autocomplete ──────────────────────────────────────
+        const majorInput = document.getElementById('major');
+        const majorDropdown = document.getElementById('major-dropdown');
+        let allMajors = [];
+        let majorLoaded = false;
+
+        function showMajorDropdown(filter) {
+            const query = filter.toLowerCase().trim();
+            const matches = query
+                ? allMajors.filter(m => m.toLowerCase().startsWith(query))
+                : allMajors;
+            if (!matches.length) { majorDropdown.style.display = 'none'; return; }
+            majorDropdown.innerHTML = matches.slice(0, 50).map(m =>
+                `<li class="major-option" data-value="${m}">${m}</li>`
+            ).join('');
+            majorDropdown.style.display = 'block';
+        }
+
+        function hideMajorDropdown() {
+            majorDropdown.style.display = 'none';
+        }
+
+        majorInput.addEventListener('input', () => {
+            if (!majorLoaded) return;
+            showMajorDropdown(majorInput.value);
+        });
+
+        majorInput.addEventListener('focus', () => {
+            if (majorLoaded && majorInput.value.length === 0) showMajorDropdown('');
+        });
+
+        majorDropdown.addEventListener('mousedown', (e) => {
+            const li = e.target.closest('.major-option');
+            if (!li) return;
+            majorInput.value = li.dataset.value;
+            hideMajorDropdown();
+        });
+
+        // Single unified outside-click handler closes both dropdowns
+        document.addEventListener('click', (e) => {
+            if (!universityInput.contains(e.target) && !universityDropdown.contains(e.target)) {
+                universityDropdown.style.display = 'none';
+            }
+            if (!majorInput.contains(e.target) && !majorDropdown.contains(e.target)) {
+                hideMajorDropdown();
+            }
+        });
+
+        async function loadMajorsForUniversity(uniName) {
+            majorLoaded = false;
+            allMajors = [];
+            majorInput.value = '';
+            majorInput.placeholder = '⏳ Loading majors...';
+            majorInput.disabled = true;
+            hideMajorDropdown();
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ role: 'user', parts: [{ text: `List a comprehensive set of 80 to 100 undergraduate majors offered at ${uniName}. Return ONLY a JSON array of strings. No markdown.` }] }],
+                        generationConfig: {
+                            maxOutputTokens: 2048,
+                            responseMimeType: "application/json",
+                            responseSchema: { type: "ARRAY", items: { type: "STRING" } }
+                        }
+                    })
+                });
+                if (!res.ok) throw new Error('API Error');
+                const result = await res.json();
+                let text = result.candidates[0].content.parts[0].text;
+                const s = text.indexOf('['), e2 = text.lastIndexOf(']');
+                if (s !== -1 && e2 !== -1) text = text.substring(s, e2 + 1);
+                allMajors = JSON.parse(text).sort();
+                majorLoaded = true;
+                majorInput.placeholder = `Type to search ${allMajors.length} majors...`;
+                majorInput.disabled = false;
+                majorInput.focus();
+                showMajorDropdown('');
+            } catch (err) {
+                console.error('Failed to load majors:', err);
+                majorInput.placeholder = 'Type your major manually';
+                majorInput.disabled = false;
+            }
+        }
+
+        universityInput.addEventListener('change', (e) => {
+            const uniName = e.target.value.trim();
+            if (uniName.length >= 3) loadMajorsForUniversity(uniName);
+        });
+
+        // Timeline selection
+        timelineBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                timelineBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                selectedYears = parseInt(e.target.dataset.years);
+            });
+        });
+
+        // Tab switching
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        };
+
+        // Form Submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                university: document.getElementById('university').value,
+                major: document.getElementById('major').value,
+                minor: document.getElementById('minor').value,
+                track: document.getElementById('track').value,
+                notes: document.getElementById('notes').value,
+                years: selectedYears
+            };
+
+            // Update UI to loading
+            submitBtn.textContent = "Regenerate Plan";
+            loadingState.style.display = "flex";
+            outputSection.style.display = "none";
+            errorCard.style.display = "none";
+            document.getElementById('output-container').scrollIntoView({ behavior: 'smooth' });
+
+            // Rotating loading text
+            let messageIdx = 0;
+            const messageInterval = setInterval(() => {
+                messageIdx = (messageIdx + 1) % loadingMessages.length;
+                loadingText.textContent = loadingMessages[messageIdx];
+            }, 2000);
+
+            try {
+                await generatePlan(formData);
+                errorCard.style.display = "none";
+                scheduleLegend.style.display = "flex";
+                renderResults();
+                loadingState.style.display = "none";
+                outputSection.style.display = "block";
+            } catch (err) {
+                console.error(err);
+                loadingState.style.display = "none";
+                outputSection.style.display = "block";
+                window.switchTab('schedule');
+                
+                errorCard.style.display = "block";
+                errorMessage.textContent = err.message || "Failed to generate plan. Please check your API key and connection.";
+                document.getElementById('schedule-content').innerHTML = '';
+                scheduleLegend.style.display = "none";
+            } finally {
+                clearInterval(messageInterval);
+            }
+        });
+
+        async function generatePlan(data) {
+            let scheduleSchemaStr = "";
+            for (let i = 1; i <= data.years; i++) {
+                scheduleSchemaStr += `    {
+      "year": ${i},
+      "fall": ["Course Name (DEPT 101) - 3 cr", "..."],
+      "spring": ["Course Name (DEPT 102) - 3 cr", "..."]
+    }${i < data.years ? ',' : ''}\n`;
+            }
+
+            const systemPrompt = `You are an expert academic advisor for university students.
+Your task is to generate a highly realistic, comprehensive academic plan based on the user's inputs. Use Google Search to find the specific courses and curriculum information for the given university and major.
+
+CRITICAL INSTRUCTIONS:
+1. Return ONLY raw JSON. No markdown formatting, no backticks, no preamble, no explanations.
+2. The JSON must exactly match the schema provided below. DO NOT wrap the schema in any parent object. The root of the JSON MUST be the object containing "schedule", "electives", etc.
+3. Generate exactly ${data.years} years of schedule. It is CRITICAL that the schedule array has exactly ${data.years} items.
+4. Each semester must have 4-6 courses, totaling 15-18 credit hours.
+5. Use realistic course codes matching the university and major (e.g., BIO 101, CHEM 201) by referencing real degree maps found via search.
+6. Weave general education/core requirements naturally throughout all years. Explicitly label them with "(Gen-Ed)" or "(Core)" in the string.
+7. Mark elective slots EXACTLY as: "Open Elective — See electives tab - 3 cr".
+8. Provide at least 8 elective options.
+9. Provide 5-8 organizations. Valid types: club, professional, honor society, volunteer.
+10. Provide 2-4 career fairs.
+11. Provide all relevant professional exams for the track (MCAT, LSAT, GRE, etc.). If none are strictly required, provide general grad school or industry certifications.
+12. Provide 6-10 personalized advisor tips.
+13. If a minor is provided, integrate its courses into the schedule.
+14. Honor any additional notes (study abroad, double major, etc.).
+
+SCHEMA:
+{
+  "schedule": [
+${scheduleSchemaStr}  ],
+  "electives": [
+    { "name": "Course Name (DEPT 200)", "credits": 3, "description": "One-line description" }
+  ],
+  "organizations": [
+    { "name": "Org name", "description": "Why relevant", "type": "club|professional|honor society|volunteer" }
+  ],
+  "career_fairs": [
+    { "name": "Fair name", "timing": "e.g. Fall of Junior Year", "purpose": "Why attend" }
+  ],
+  "professional_exams": [
+    { "name": "Exam name", "timeline": "When to take it", "description": "What it is", "prep_time": "Typical prep duration" }
+  ],
+  "advisor_tips": ["Tip 1", "Tip 2"]
+}`;
+
+            const userPrompt = `Please create a ${data.years}-year academic plan for a student at ${data.university} majoring in ${data.major}.
+Minor: ${data.minor || 'None'}
+Track: ${data.track || 'None'}
+Additional Notes: ${data.notes || 'None'}
+
+Remember: ONLY OUTPUT RAW JSON.`;
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                    contents: [{
+                        role: 'user',
+                        parts: [{ text: userPrompt }]
+                    }],
+                    tools: [{
+                        googleSearch: {}
+                    }],
+                    generationConfig: {
+                        maxOutputTokens: 8192
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => null);
+                const errMsg = errData?.error?.message || await response.text();
+                throw new Error(`API Error (${response.status}): ${errMsg}`);
+            }
+
+            const result = await response.json();
+            
+            // Extract the generated text from Gemini's response structure
+            const textContent = result.candidates[0].content.parts[0].text;
+            
+            // Extract JSON to handle any accidental markdown formatting
+            const firstBrace = textContent.indexOf('{');
+            const lastBrace = textContent.lastIndexOf('}');
+            
+            if (firstBrace === -1 || lastBrace === -1) {
+                throw new Error("Failed to parse JSON from AI response.");
+            }
+            
+            const jsonStr = textContent.substring(firstBrace, lastBrace + 1);
+            planData = JSON.parse(jsonStr);
+
+            // Robust check to ensure planData has the correct root structure
+            if (!planData.schedule || !Array.isArray(planData.schedule)) {
+                let found = false;
+                for (const key in planData) {
+                    if (planData[key] && Array.isArray(planData[key].schedule)) {
+                        planData = planData[key];
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    throw new Error("AI response did not contain a valid schedule array. Try regenerating the plan.");
+                }
+            }
+        }
+
+        function getCourseTypeClass(courseStr) {
+            const lower = courseStr.toLowerCase();
+            if (lower.includes('elective')) return 'elec';
+            if (lower.includes('gen-ed') || lower.includes('core') || lower.includes('general education')) return 'gen';
+            return 'req';
+        }
+
+        function getYearLabel(yearNum, totalYears) {
+            if (totalYears === 4) {
+                return ["Freshman", "Sophomore", "Junior", "Senior"][yearNum - 1] || `Year ${yearNum}`;
+            } else if (totalYears === 3) {
+                return ["First Year", "Second Year", "Final Year"][yearNum - 1] || `Year ${yearNum}`;
+            } else {
+                const labels = ["Freshman", "Sophomore", "Junior", "Senior", "Fifth Year", "Sixth Year"];
+                return labels[yearNum - 1] || `Year ${yearNum}`;
+            }
+        }
+
+        function getOrgIcon(type) {
+            const t = (type || '').toLowerCase();
+            if (t.includes('professional')) return '💼';
+            if (t.includes('honor')) return '🏅';
+            if (t.includes('volunteer')) return '🤝';
+            return '🔬'; // club
+        }
+
+        function renderResults() {
+            if (!planData) return;
+
+            // 1. Schedule
+            const scheduleContainer = document.getElementById('schedule-content');
+            scheduleContainer.innerHTML = '';
+            
+            let headersHtml = '<div class="matrix-cell empty-cell"></div>';
+            let fallHtml = '<div class="matrix-row-label">Fall Semester</div>';
+            let springHtml = '<div class="matrix-row-label">Spring Semester</div>';
+
+            (planData.schedule || []).forEach(yearData => {
+                const yearLabel = getYearLabel(yearData.year, selectedYears);
+                
+                headersHtml += `<div class="matrix-header">${yearLabel}</div>`;
+                
+                const fallCourses = (yearData.fall || []).map(c => 
+                    `<li class="course-item ${getCourseTypeClass(c)}">${c}</li>`
+                ).join('');
+                fallHtml += `<div class="matrix-cell"><ul class="course-list">${fallCourses}</ul></div>`;
+                
+                const springCourses = (yearData.spring || []).map(c => 
+                    `<li class="course-item ${getCourseTypeClass(c)}">${c}</li>`
+                ).join('');
+                springHtml += `<div class="matrix-cell"><ul class="course-list">${springCourses}</ul></div>`;
+            });
+
+            const numCols = (planData.schedule || []).length;
+            scheduleContainer.innerHTML = `
+                <div class="schedule-matrix" style="--cols: ${numCols}">
+                    ${headersHtml}
+                    ${fallHtml}
+                    ${springHtml}
+                </div>
+            `;
+
+            // 2. Electives
+            const electivesContainer = document.getElementById('electives-content');
+            electivesContainer.innerHTML = (planData.electives || []).map(e => `
+                <div class="info-card">
+                    <div class="meta">${e.credits} Credits</div>
+                    <h3>${e.name}</h3>
+                    <p>${e.description}</p>
+                </div>
+            `).join('');
+
+            // 3. Orgs & Fairs
+            const fairsContainer = document.getElementById('fairs-content');
+            fairsContainer.innerHTML = (planData.career_fairs || []).map(f => `
+                <div class="info-card">
+                    <div class="meta">${f.timing}</div>
+                    <h3>${f.name}</h3>
+                    <p>${f.purpose}</p>
+                </div>
+            `).join('');
+
+            const orgsContainer = document.getElementById('orgs-content');
+            orgsContainer.innerHTML = (planData.organizations || []).map(o => `
+                <div class="info-card">
+                    <div class="meta">${getOrgIcon(o.type)} ${o.type}</div>
+                    <h3>${o.name}</h3>
+                    <p>${o.description}</p>
+                </div>
+            `).join('');
+
+            // 4. Exams
+            const examsContainer = document.getElementById('exams-content');
+            examsContainer.innerHTML = (planData.professional_exams || []).map(e => `
+                <div class="info-card">
+                    <div class="meta">${e.timeline} • Prep: ${e.prep_time}</div>
+                    <h3>${e.name}</h3>
+                    <p>${e.description}</p>
+                </div>
+            `).join('');
+
+            // 5. Tips
+            const tipsContainer = document.getElementById('tips-content');
+            tipsContainer.innerHTML = (planData.advisor_tips || []).map(t => `
+                <li>${t}</li>
+            `).join('');
+            
+            // Switch to schedule tab by default
+            window.switchTab('schedule');
+        }
+    </script>
+</body>
+</html>
