@@ -9,12 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --navy: #0D1B2A;
-            --gold: #D4A843;
-            --cream: #FDFAF4;
+            --navy: #0B2435;
+            --gold: #8DD7D2;
+            --cream: #F4F7FA;
             --white: #FFFFFF;
             --error: #FFB703;
-            --green: #2A9D8F;
+            --green: #39B9A5;
+            --hero-overlay-1: rgba(6, 21, 33, 0.8);
+            --hero-overlay-2: rgba(4, 14, 23, 0.78);
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
@@ -33,6 +35,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -42,8 +45,9 @@
 
         /* Header */
         header {
-            background-color: var(--navy);
-            padding: 1rem 2rem;
+            background-color: rgba(4, 16, 26, 0.82);
+            backdrop-filter: blur(8px);
+            padding: 0.9rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,17 +58,25 @@
         }
 
         header h1 {
-            color: var(--gold);
-            font-size: 2rem;
+            color: #EAF8F7;
+            font-size: 1.35rem;
             margin: 0;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            letter-spacing: 0.01em;
+        }
+
+        .logo-mark {
+            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            color: var(--gold);
         }
 
         .badge {
-            background-color: rgba(212, 168, 67, 0.1);
-            color: var(--gold);
+            background-color: rgba(141, 215, 210, 0.12);
+            color: #D9F4F1;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.75rem;
@@ -72,25 +84,139 @@
             font-weight: 600;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            border: 1px solid var(--gold);
+            border: 1px solid rgba(141, 215, 210, 0.5);
         }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 86vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 1.5rem 12rem;
+            background-image:
+                linear-gradient(120deg, var(--hero-overlay-1), var(--hero-overlay-2)),
+                url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1800&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(61, 173, 166, 0.2), transparent 32%),
+                radial-gradient(circle at 80% 90%, rgba(61, 173, 166, 0.14), transparent 30%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            text-align: center;
+            color: #F2FBFA;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+        }
+
+        .hero h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(2.2rem, 7vw, 4.8rem);
+            line-height: 1.05;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.35rem;
+        }
+
+        .hero p {
+            max-width: 760px;
+            margin: 0 auto;
+            font-size: clamp(1rem, 2.1vw, 1.6rem);
+            color: #C7DDE1;
+        }
+
+        .hero-actions {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            border-radius: 4px;
+            border: 1px solid transparent;
+            padding: 0.82rem 1.6rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+        }
+
+        .cta-btn.primary {
+            background: #F7FAFB;
+            color: #0E2534;
+        }
+
+        .cta-btn.secondary {
+            background: transparent;
+            color: #E3F4F3;
+            border-color: rgba(227, 244, 243, 0.7);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .feature-strip {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem;
+            color: #AEC9CD;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
 
         /* Main Container */
         main {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+            margin: -8rem auto 0;
+            padding: 0 1.25rem 2rem;
             flex-grow: 1;
             width: 100%;
+            position: relative;
+            z-index: 2;
         }
 
         /* Form */
         .card {
             background-color: var(--white);
-            border-radius: 16px;
+            border-radius: 14px;
             padding: 2rem;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 30px 55px -40px rgba(3, 8, 13, 0.95);
             margin-bottom: 2rem;
+            border: 1px solid rgba(131, 164, 177, 0.22);
         }
 
         .form-grid {
@@ -103,6 +229,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            align-self: start;
         }
 
         .form-group.full-width {
@@ -139,6 +266,195 @@
         .major-option:hover {
             background: rgba(205, 155, 29, 0.12);
             font-weight: 600;
+        }
+
+        .picker-shell {
+            position: relative;
+        }
+
+        .picker-input-wrap {
+            position: relative;
+        }
+
+        .field-affordances {
+            position: absolute;
+            top: 50%;
+            right: 0.9rem;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            pointer-events: none;
+        }
+
+        .field-spinner {
+            display: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid rgba(11, 36, 53, 0.18);
+            border-top-color: var(--gold);
+            animation: spin 0.8s linear infinite;
+        }
+
+        .field-clear {
+            display: none;
+            pointer-events: auto;
+            border: none;
+            background: rgba(11, 36, 53, 0.08);
+            color: var(--navy);
+            border-radius: 999px;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .picker-input {
+            padding-right: 4.25rem !important;
+        }
+
+        .program-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 2px);
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            max-height: 320px;
+            overflow-y: auto;
+            z-index: 9999;
+            margin: 0;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-section {
+            padding: 0.35rem 0;
+        }
+
+        .dropdown-heading {
+            padding: 0.55rem 1rem 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #6B7280;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(11, 36, 53, 0.08);
+            margin: 0.35rem 0;
+        }
+
+        .dropdown-item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: left;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            color: var(--navy);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(205, 155, 29, 0.12);
+        }
+
+        .dropdown-item-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .dropdown-item-title {
+            font-size: 0.96rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .dropdown-item-subtitle {
+            font-size: 0.82rem;
+            color: #5B6572;
+            line-height: 1.35;
+        }
+
+        .dropdown-item-meta {
+            white-space: nowrap;
+            font-size: 0.82rem;
+            color: var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.05rem;
+        }
+
+        .dropdown-empty,
+        .dropdown-loading {
+            padding: 0.9rem 1rem;
+            color: #5B6572;
+            font-size: 0.92rem;
+        }
+
+        .dropdown-disclaimer {
+            padding: 0.75rem 1rem 0.85rem;
+            border-top: 1px solid rgba(11, 36, 53, 0.08);
+            color: #5B6572;
+            font-size: 0.82rem;
+            line-height: 1.4;
+            background: rgba(244, 247, 250, 0.8);
+        }
+
+        .popular-callout {
+            display: none;
+            margin-top: 0.85rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(141, 215, 210, 0.14), rgba(244, 247, 250, 0.96));
+            border: 1px solid rgba(141, 215, 210, 0.55);
+        }
+
+        .popular-callout-header {
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 0.65rem;
+        }
+
+        .popular-callout-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .popular-callout-btn {
+            border: none;
+            background: transparent;
+            text-align: left;
+            padding: 0;
+            cursor: pointer;
+            color: var(--navy);
+        }
+
+        .popular-callout-btn:hover .popular-callout-title {
+            text-decoration: underline;
+        }
+
+        .popular-callout-title {
+            font-weight: 700;
+        }
+
+        .popular-callout-desc {
+            font-size: 0.9rem;
+            color: #5B6572;
         }
 
         label {
@@ -198,8 +514,8 @@
 
         /* Submit Button */
         .submit-btn {
-            background-color: var(--gold);
-            color: var(--navy);
+            background-color: #0D3348;
+            color: #E6F7F5;
             border: none;
             padding: 1rem 2rem;
             border-radius: 8px;
@@ -213,7 +529,7 @@
         }
 
         .submit-btn:hover {
-            background-color: #C39732;
+            background-color: #15455F;
             transform: translateY(-1px);
         }
 
@@ -537,6 +853,16 @@
                 gap: 1rem;
                 text-align: center;
             }
+            .hero {
+                min-height: 72vh;
+                padding-bottom: 9rem;
+            }
+            .hero h2 {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+            main {
+                margin-top: -5.8rem;
+            }
             .tabs {
                 flex-wrap: wrap;
             }
@@ -546,9 +872,36 @@
 <body>
 
     <header>
-        <h1>Pathfinder Advisor</h1>
-        <span class="badge">Powered by Gemini</span>
+        <h1>
+            <svg class="logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 16h4l3-6 4 8 4-10 3 2" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Pathfinder Advisor
+        </h1>
+        <span class="badge">Powered by GitHub Models</span>
     </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-brand">
+                <svg class="logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M3 16h4l3-6 4 8 4-10 3 2" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                PathFinder
+            </div>
+            <h2>Stop guessing your semesters.<br>Start calculating them.</h2>
+            <p>PathFinder turns degree planning into a live strategy dashboard. Build a realistic graduation path, map requirements, and prep for careers with confidence.</p>
+            <div class="hero-actions">
+                <button class="cta-btn primary" id="start-free-btn" type="button">Start for free</button>
+                <button class="cta-btn secondary" id="see-how-btn" type="button">See how it works</button>
+            </div>
+            <div class="feature-strip">
+                <div class="feature-item">⚡ AI-powered roadmap generation</div>
+                <div class="feature-item">🛡 Degree-audit friendly guidance</div>
+                <div class="feature-item">🧭 Career + exam planning in one place</div>
+            </div>
+        </div>
+    </section>
 
     <main>
         <!-- Input Form -->
@@ -558,7 +911,7 @@
                 <div class="form-grid">
                     <div class="form-group" style="position:relative;">
                         <label for="university">University *</label>
-                        <input type="text" id="university" required placeholder="e.g. University of Michigan" autocomplete="off">
+                        <input type="text" id="university" required placeholder="e.g. Any university" autocomplete="off">
                         <ul id="university-dropdown" class="major-dropdown"></ul>
                     </div>
                     <div class="form-group" style="position:relative;">
@@ -566,13 +919,28 @@
                         <input type="text" id="major" required placeholder="Select university first" autocomplete="off">
                         <ul id="major-dropdown" class="major-dropdown"></ul>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group picker-shell">
                         <label for="minor">Minor (Optional)</label>
-                        <input type="text" id="minor" placeholder="e.g. Public Health">
+                        <div class="picker-input-wrap">
+                            <input type="text" id="minor" class="picker-input" placeholder="e.g. Public Health" autocomplete="off">
+                            <div class="field-affordances">
+                                <span class="field-spinner" id="minor-spinner" aria-hidden="true"></span>
+                                <button type="button" class="field-clear" id="minor-clear" aria-label="Clear minor">✕</button>
+                            </div>
+                            <ul id="minor-dropdown" class="program-dropdown" aria-label="Minor suggestions"></ul>
+                        </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group picker-shell">
                         <label for="track">Track (Optional)</label>
-                        <input type="text" id="track" placeholder="e.g. Pre-Medicine, Pre-Law">
+                        <div class="picker-input-wrap">
+                            <input type="text" id="track" class="picker-input" placeholder="e.g. Pre-Medicine, Pre-Law" autocomplete="off">
+                            <div class="field-affordances">
+                                <span class="field-spinner" id="track-spinner" aria-hidden="true"></span>
+                                <button type="button" class="field-clear" id="track-clear" aria-label="Clear track">✕</button>
+                            </div>
+                            <ul id="track-dropdown" class="program-dropdown" aria-label="Track suggestions"></ul>
+                        </div>
+                        <div id="popular-combinations-callout" class="popular-callout"></div>
                     </div>
                     <div class="form-group full-width">
                         <label>Graduation Timeline</label>
@@ -604,11 +972,11 @@
             <div class="card" id="output-section">
                 
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('schedule')">N-Year Schedule</button>
-                    <button class="tab-btn" onclick="switchTab('electives')">Electives</button>
-                    <button class="tab-btn" onclick="switchTab('orgs-fairs')">Orgs & Fairs</button>
-                    <button class="tab-btn" onclick="switchTab('exams')">Professional Exams</button>
-                    <button class="tab-btn" onclick="switchTab('tips')">Advisor Tips</button>
+                    <button class="tab-btn active" onclick="switchTab('schedule', this)">N-Year Schedule</button>
+                    <button class="tab-btn" onclick="switchTab('electives', this)">Electives</button>
+                    <button class="tab-btn" onclick="switchTab('orgs-fairs', this)">Orgs & Fairs</button>
+                    <button class="tab-btn" onclick="switchTab('exams', this)">Professional Exams</button>
+                    <button class="tab-btn" onclick="switchTab('tips', this)">Advisor Tips</button>
                 </div>
 
                 <!-- Tab 1: Schedule -->
@@ -659,8 +1027,75 @@
     </main>
 
     <script>
-        // API Key will be injected by the environment
-        const API_KEY = window.GEMINI_API_KEY || "AIzaSyCrMKtssyxEGgx5kl3PXY82noVBI_pEbUs"; 
+        // GitHub Models config can be injected by the environment.
+        const GITHUB_MODELS_ENDPOINT = window.GITHUB_MODELS_ENDPOINT || "https://models.inference.ai.azure.com/chat/completions";
+
+        function getGitHubModelsTokenInfo() {
+            const fromWindow = window.GITHUB_MODELS_TOKEN || window.GITHUB_TOKEN || '';
+            const fromStorage = localStorage.getItem('GITHUB_MODELS_TOKEN') || '';
+            if (String(fromWindow).trim()) {
+                return { token: String(fromWindow).trim(), source: 'window' };
+            }
+            if (String(fromStorage).trim()) {
+                return { token: String(fromStorage).trim(), source: 'localStorage' };
+            }
+            return { token: '', source: 'none' };
+        }
+
+        function parseModelList(input) {
+            if (!input) return [];
+            if (Array.isArray(input)) {
+                return input.map(x => String(x).trim()).filter(Boolean);
+            }
+            const raw = String(input).trim();
+            if (!raw) return [];
+
+            if (raw.startsWith('[')) {
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        return parsed.map(x => String(x).trim()).filter(Boolean);
+                    }
+                } catch {
+                    // Fallback to comma parsing below.
+                }
+            }
+
+            return raw.split(',').map(x => x.trim()).filter(Boolean);
+        }
+
+        function expandModelCandidates(models) {
+            const expanded = [];
+            const seen = new Set();
+
+            (models || []).forEach(model => {
+                const trimmed = String(model || '').trim();
+                if (!trimmed) return;
+
+                const plain = trimmed.includes('/') ? trimmed.split('/').pop() : trimmed;
+                [trimmed, plain].forEach(candidate => {
+                    const key = candidate.toLowerCase();
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        expanded.push(candidate);
+                    }
+                });
+            });
+
+            return expanded;
+        }
+
+        function resolveGitHubModels() {
+            // Defaults are selected to be broadly available and cost-efficient.
+            const defaultModels = ['gpt-4o-mini'];
+            const injected = parseModelList(window.GITHUB_MODELS);
+            if (injected.length) return expandModelCandidates(injected);
+
+            const stored = parseModelList(localStorage.getItem('GITHUB_MODELS'));
+            if (stored.length) return expandModelCandidates(stored);
+
+            return expandModelCandidates(defaultModels);
+        }
 
         // State
         let selectedYears = 4;
@@ -676,6 +1111,328 @@
         const errorCard = document.getElementById('error-card');
         const errorMessage = document.getElementById('error-message');
         const scheduleLegend = document.getElementById('schedule-legend');
+        const startFreeBtn = document.getElementById('start-free-btn');
+        const seeHowBtn = document.getElementById('see-how-btn');
+
+        const GITHUB_MODELS = resolveGitHubModels();
+        const COMMON_MAJORS = [
+            'Accounting', 'Aerospace Engineering', 'Anthropology', 'Architecture', 'Art History',
+            'Biochemistry', 'Biology', 'Biomedical Engineering', 'Business Administration', 'Chemical Engineering',
+            'Chemistry', 'Civil Engineering', 'Communication', 'Computer Engineering', 'Computer Science',
+            'Data Science', 'Economics', 'Education', 'Electrical Engineering', 'English',
+            'Environmental Science', 'Film Studies', 'Finance', 'Graphic Design', 'History',
+            'Industrial Engineering', 'Information Systems', 'International Relations', 'Journalism', 'Kinesiology',
+            'Marketing', 'Mathematics', 'Mechanical Engineering', 'Music', 'Neuroscience',
+            'Nursing', 'Philosophy', 'Physics', 'Political Science', 'Psychology',
+            'Public Health', 'Sociology', 'Software Engineering', 'Statistics', 'Supply Chain Management'
+        ];
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function fetchTextWithTimeout(url, timeoutMs = 12000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const response = await fetch(url, { signal: controller.signal });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.text();
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
+        function isTransientApiStatus(status) {
+            return [429, 500, 502, 503, 504].includes(status);
+        }
+
+        async function parseApiError(response) {
+            const fallback = `Request failed with status ${response.status}`;
+            try {
+                const data = await response.clone().json();
+                return data?.error?.message || fallback;
+            } catch {
+                try {
+                    const text = await response.text();
+                    return text || fallback;
+                } catch {
+                    return fallback;
+                }
+            }
+        }
+
+        function isContentPolicyError(message) {
+            const text = String(message || '').toLowerCase();
+            return text.includes('content management policy')
+                || text.includes('content policy')
+                || text.includes('response was filtered')
+                || text.includes('safety system');
+        }
+
+        function extractStringArrayFromText(text) {
+            const raw = String(text || '').trim();
+            if (!raw) throw new Error('Empty majors response');
+
+            const firstBracket = raw.indexOf('[');
+            const lastBracket = raw.lastIndexOf(']');
+            if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+                try {
+                    const jsonSlice = raw.substring(firstBracket, lastBracket + 1);
+                    const parsed = JSON.parse(jsonSlice);
+                    if (Array.isArray(parsed)) {
+                        return parsed.map(item => String(item).trim()).filter(Boolean);
+                    }
+                } catch {
+                    // Fall through to quoted-line and plain-line parsing.
+                }
+            }
+
+            const quotedMatches = [...raw.matchAll(/"([^"\n]{2,})"/g)].map(match => match[1].trim()).filter(Boolean);
+            if (quotedMatches.length >= 8) return quotedMatches;
+
+            const lineMatches = raw
+                .split('\n')
+                .map(line => line.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').trim())
+                .filter(line => line.length > 2 && !line.includes('{') && !line.includes('}'));
+
+            if (lineMatches.length >= 8) return lineMatches;
+
+            throw new Error('Unable to extract majors list');
+        }
+
+        function extractAssistantText(result) {
+            const content = result?.choices?.[0]?.message?.content;
+            if (typeof content === 'string') return content;
+            if (Array.isArray(content)) {
+                return content
+                    .map(part => {
+                        if (typeof part === 'string') return part;
+                        if (part && typeof part.text === 'string') return part.text;
+                        return '';
+                    })
+                    .join('')
+                    .trim();
+            }
+            return '';
+        }
+
+        function sanitizeAcademicText(text, maxLength = 120) {
+            const compact = String(text || '')
+                .replace(/[\r\n\t]+/g, ' ')
+                .replace(/\s+/g, ' ')
+                .replace(/[`"']/g, '')
+                .trim();
+
+            if (!compact) return '';
+            return compact.length > maxLength ? `${compact.slice(0, maxLength - 1)}…` : compact;
+        }
+
+        function getProgramOptions(data) {
+            const minor = sanitizeAcademicText(data?.minor, 80);
+            const track = sanitizeAcademicText(data?.track, 80);
+            const hasMinor = Boolean(minor);
+            const hasTrack = Boolean(track);
+
+            return {
+                minor,
+                track,
+                hasMinor,
+                hasTrack,
+                hasEnrichment: hasMinor || hasTrack
+            };
+        }
+
+        async function fetchLiveCurriculumContext(data) {
+            const university = sanitizeAcademicText(data?.university, 90);
+            const major = sanitizeAcademicText(data?.major, 90);
+            const minor = sanitizeAcademicText(data?.minor, 70);
+            const track = sanitizeAcademicText(data?.track, 70);
+
+            const topicParts = [major];
+            if (minor) topicParts.push(`${minor} minor`);
+            if (track) topicParts.push(`${track} track`);
+            topicParts.push('undergraduate majors minors tracks catalog degree requirements');
+
+            const query = `${university} ${topicParts.join(' ')}`.trim();
+            const searchUrl = `https://r.jina.ai/http://www.bing.com/search?q=${encodeURIComponent(query)}`;
+
+            try {
+                const raw = await fetchTextWithTimeout(searchUrl, 14000);
+                const linkMatches = raw.match(/https?:\/\/[^\s)]+/g) || [];
+                const officialLinks = [...new Set(
+                    linkMatches
+                        .map(link => link.replace(/[.,;]$/, ''))
+                        .filter(link => /\.edu|catalog|registrar|bulletin|academics|course/i.test(link))
+                )].slice(0, 6);
+
+                const catalogLikeLinks = officialLinks.filter(link =>
+                    /catalog|registrar|bulletin|academics|major|minor|track|program|undergraduate/i.test(link)
+                ).slice(0, 4);
+
+                const pageExcerpts = [];
+                for (const link of catalogLikeLinks.slice(0, 3)) {
+                    try {
+                        const normalized = link.replace(/^https?:\/\//i, '');
+                        const proxiedUrl = `https://r.jina.ai/http://${normalized}`;
+                        const pageRaw = await fetchTextWithTimeout(proxiedUrl, 12000);
+                        const excerptLines = pageRaw
+                            .split('\n')
+                            .map(line => line.trim())
+                            .filter(line => line.length > 45)
+                            .filter(line => /major|minor|track|concentration|pathway|pre-med|pre-law|program|curriculum|requirement/i.test(line))
+                            .slice(0, 10);
+
+                        if (excerptLines.length) {
+                            pageExcerpts.push(`Source: ${link}\n${excerptLines.join('\n')}`);
+                        }
+                    } catch {
+                        // Ignore individual source failures and continue with remaining links.
+                    }
+                }
+
+                const cleanedLines = raw
+                    .split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 35)
+                    .filter(line => /catalog|curriculum|degree requirements|major requirements|course availability|major|minor|track|program|fall|spring/i.test(line))
+                    .slice(0, 14);
+
+                if (!cleanedLines.length && !officialLinks.length && !pageExcerpts.length) return '';
+                const joined = cleanedLines.join('\n');
+                const excerptsBlock = pageExcerpts.length
+                    ? `\n\nExtracted catalog signals:\n${pageExcerpts.join('\n\n')}`
+                    : '';
+                const sourcesBlock = officialLinks.length
+                    ? `\n\nPotential official sources:\n${officialLinks.map(link => `- ${link}`).join('\n')}`
+                    : '';
+                const fullText = `${joined}${excerptsBlock}${sourcesBlock}`.trim();
+                return fullText.length > 2800 ? `${fullText.slice(0, 2800)}...` : fullText;
+            } catch (err) {
+                console.warn('Live curriculum lookup unavailable:', err?.message || err);
+                return '';
+            }
+        }
+
+        function buildStudentContext(data) {
+            const programOptions = getProgramOptions(data);
+            const lines = [
+                `University: ${sanitizeAcademicText(data.university, 80)}`,
+                `Major: ${sanitizeAcademicText(data.major, 80)}`,
+                `Timeline: ${Number(data.years) || 4} years`,
+                `Program Mode: ${programOptions.hasEnrichment ? 'Major + additional program(s)' : 'Major only'}`
+            ];
+
+            if (programOptions.hasMinor) lines.push(`Minor: ${programOptions.minor}`);
+
+            if (programOptions.hasTrack) lines.push(`Track: ${programOptions.track}`);
+
+            const notes = sanitizeAcademicText(data.notes, 160);
+            if (notes) lines.push(`Notes: ${notes}`);
+
+            return lines.join('\n');
+        }
+
+        async function callGitHubModelsWithFallback(messages, options = {}) {
+            const {
+                models = GITHUB_MODELS,
+                maxRetriesPerModel = 2,
+                baseDelayMs = 800,
+                timeoutMs = 120000,
+                maxTokens = 4096,
+                temperature = 0.2
+            } = options;
+
+            const tokenInfo = getGitHubModelsTokenInfo();
+            const runtimeToken = tokenInfo.token;
+            if (!runtimeToken) {
+                throw new Error('Missing GitHub Models token. Run in browser console: localStorage.setItem("GITHUB_MODELS_TOKEN", "YOUR_TOKEN"); then reload.');
+            }
+
+            let lastError = 'Unknown API error';
+
+            for (const model of models) {
+                for (let attempt = 0; attempt <= maxRetriesPerModel; attempt++) {
+                    let response;
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+                        response = await fetch(GITHUB_MODELS_ENDPOINT, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${runtimeToken}`,
+                                'api-key': runtimeToken
+                            },
+                            body: JSON.stringify({
+                                model,
+                                messages,
+                                temperature,
+                                max_tokens: maxTokens
+                            }),
+                            signal: controller.signal
+                        });
+                        clearTimeout(timeoutId);
+                    } catch (err) {
+                        const isTimeout = err?.name === 'AbortError';
+                        lastError = isTimeout
+                            ? `API timeout [${model}] after ${timeoutMs}ms`
+                            : (err?.message || `Network error [${model}]`);
+
+                        if (attempt < maxRetriesPerModel) {
+                            const jitter = Math.floor(Math.random() * 350);
+                            const waitMs = baseDelayMs * Math.pow(2, attempt) + jitter;
+                            await sleep(waitMs);
+                            continue;
+                        }
+
+                        break;
+                    }
+
+                    if (response.ok) {
+                        return await response.json();
+                    }
+
+                    if (response.status === 401) {
+                        if (tokenInfo.source === 'localStorage') {
+                            localStorage.removeItem('GITHUB_MODELS_TOKEN');
+                        }
+                        throw new Error('API Error (401): Bad credentials. Your GitHub Models token is invalid or expired. Set a valid token in localStorage and reload.');
+                    }
+
+                    const errMsg = await parseApiError(response);
+                    if (response.status === 400 && isContentPolicyError(errMsg)) {
+                        throw new Error(`API Error (400) [${model}]: ${errMsg}`);
+                    }
+
+                    lastError = `API Error (${response.status}) [${model}]: ${errMsg}`;
+
+                    if (isTransientApiStatus(response.status) && attempt < maxRetriesPerModel) {
+                        const jitter = Math.floor(Math.random() * 350);
+                        const waitMs = baseDelayMs * Math.pow(2, attempt) + jitter;
+                        await sleep(waitMs);
+                        continue;
+                    }
+
+                    break;
+                }
+            }
+
+            if (String(lastError).toLowerCase().includes('api timeout')) {
+                throw new Error(`${lastError}. The model response took too long. Please retry with shorter notes, or try again in a minute.`);
+            }
+
+            throw new Error(`${lastError}. We retried automatically across multiple GitHub models, but the provider is still unavailable. Please retry in a minute.`);
+        }
+
+        startFreeBtn.addEventListener('click', () => {
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('university').focus();
+        });
+
+        seeHowBtn.addEventListener('click', () => {
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
 
         // Loading Messages
         const loadingMessages = [
@@ -690,6 +1447,332 @@
         const universityDropdown = document.getElementById('university-dropdown');
         let debounceTimer;
         let uniResults = [];
+        let majorRequestId = 0;
+
+        const majorInput = document.getElementById('major');
+        const majorDropdown = document.getElementById('major-dropdown');
+        const minorInput = document.getElementById('minor');
+        const trackInput = document.getElementById('track');
+        const minorDropdown = document.getElementById('minor-dropdown');
+        const trackDropdown = document.getElementById('track-dropdown');
+        const minorSpinner = document.getElementById('minor-spinner');
+        const trackSpinner = document.getElementById('track-spinner');
+        const minorClearBtn = document.getElementById('minor-clear');
+        const trackClearBtn = document.getElementById('track-clear');
+        const popularCallout = document.getElementById('popular-combinations-callout');
+        const minorDefaultPlaceholder = minorInput.placeholder;
+        const trackDefaultPlaceholder = trackInput.placeholder;
+        let allMajors = [];
+        let majorLoaded = false;
+        let minorTrackData = null;
+        let minorTrackLoadedKey = '';
+        let minorTrackLoading = false;
+        let minorTrackFallback = false;
+        let minorTrackRequestId = 0;
+        let minorTrackPrefetchTimer = null;
+
+        function getProgramLoadKey() {
+            return `${universityInput.value.trim().toLowerCase()}::${majorInput.value.trim().toLowerCase()}`;
+        }
+
+        function prerequisitesReady() {
+            return universityInput.value.trim().length > 0 && majorInput.value.trim().length > 0;
+        }
+
+        function showFieldSpinner(fieldName, visible) {
+            const spinner = fieldName === 'minor' ? minorSpinner : trackSpinner;
+            spinner.style.display = visible ? 'inline-block' : 'none';
+        }
+
+        function updateClearButton(fieldName) {
+            const input = fieldName === 'minor' ? minorInput : trackInput;
+            const button = fieldName === 'minor' ? minorClearBtn : trackClearBtn;
+            button.style.display = input.value.trim() ? 'inline-flex' : 'none';
+        }
+
+        function hideProgramDropdown(fieldName) {
+            const dropdown = fieldName === 'minor' ? minorDropdown : trackDropdown;
+            dropdown.style.display = 'none';
+            dropdown.innerHTML = '';
+        }
+
+        function hidePopularCallout() {
+            popularCallout.style.display = 'none';
+            popularCallout.innerHTML = '';
+        }
+
+        function setTemporaryPlaceholder(input, text) {
+            if (!input.dataset.originalPlaceholder) {
+                input.dataset.originalPlaceholder = input.placeholder;
+            }
+            input.placeholder = text;
+            window.clearTimeout(input._placeholderTimer);
+            input._placeholderTimer = window.setTimeout(() => {
+                input.placeholder = input.dataset.originalPlaceholder || input.placeholder;
+            }, 1500);
+        }
+
+        function invalidateMinorTrackData() {
+            minorTrackRequestId += 1;
+            minorTrackData = null;
+            minorTrackLoadedKey = '';
+            minorTrackLoading = false;
+            minorTrackFallback = false;
+            window.clearTimeout(minorTrackPrefetchTimer);
+            minorInput.placeholder = minorDefaultPlaceholder;
+            trackInput.placeholder = trackDefaultPlaceholder;
+            showFieldSpinner('minor', false);
+            showFieldSpinner('track', false);
+            hideProgramDropdown('minor');
+            hideProgramDropdown('track');
+            hidePopularCallout();
+        }
+
+        function normalizeProgramList(list, type) {
+            return (Array.isArray(list) ? list : [])
+                .map(item => {
+                    if (!item || typeof item !== 'object') return null;
+                    const name = sanitizeAcademicText(item.name, 100);
+                    if (!name) return null;
+                    return {
+                        name,
+                        credits: Number(item.credits) || (type === 'track' ? 12 : 18),
+                        popular: Boolean(item.popular),
+                        description: sanitizeAcademicText(item.description, 140),
+                        type
+                    };
+                })
+                .filter(Boolean)
+                .sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        function normalizePopularCombination(item) {
+            if (!item || typeof item !== 'object') return null;
+            const name = sanitizeAcademicText(item.minor_or_track, 100);
+            if (!name) return null;
+            const type = String(item.type || '').toLowerCase().trim() === 'track' ? 'track' : 'minor';
+            return {
+                minor_or_track: name,
+                type,
+                reason: sanitizeAcademicText(item.reason, 180)
+            };
+        }
+
+        function buildDropdownItemMarkup(item) {
+            const fillField = item.type === 'track' ? 'track' : 'minor';
+            return `
+                <button type="button" class="dropdown-item" data-field="${fillField}" data-value="${item.name.replace(/"/g, '&quot;')}">
+                    <span class="dropdown-item-main">
+                        <span class="dropdown-item-title">${item.name}</span>
+                        <span class="dropdown-item-subtitle">${item.description || (item.type === 'track' ? 'Track option' : 'Minor option')}</span>
+                    </span>
+                    <span class="dropdown-item-meta">${item.credits} cr</span>
+                </button>
+            `;
+        }
+
+        function buildPopularItemMarkup(item) {
+            const fillField = item.type === 'track' ? 'track' : 'minor';
+            return `
+                <button type="button" class="popular-callout-btn" data-field="${fillField}" data-value="${item.minor_or_track.replace(/"/g, '&quot;')}">
+                    <div class="popular-callout-title">${item.minor_or_track} — ${item.type === 'track' ? 'Track' : 'Minor'}</div>
+                    <div class="popular-callout-desc">${item.reason}</div>
+                </button>
+            `;
+        }
+
+        function filterMinorTrackItems(fieldName, query) {
+            const data = minorTrackData || { minors: [], tracks: [], popular_combinations: [] };
+            const term = query.toLowerCase().trim();
+            const popular = (data.popular_combinations || []).filter(item => {
+                if (!term) return true;
+                return [item.minor_or_track, item.reason, item.type].join(' ').toLowerCase().includes(term);
+            }).slice(0, 4);
+            const list = fieldName === 'track' ? data.tracks : data.minors;
+            const allMatches = list.filter(item => {
+                if (!term) return true;
+                return [item.name, item.description, item.credits].join(' ').toLowerCase().includes(term);
+            });
+            return { popular, allMatches };
+        }
+
+        function renderMinorTrackDropdown(fieldName) {
+            const input = fieldName === 'minor' ? minorInput : trackInput;
+            const dropdown = fieldName === 'minor' ? minorDropdown : trackDropdown;
+            const label = fieldName === 'minor' ? 'Minors' : 'Tracks';
+            const query = input.value.trim();
+
+            if (!prerequisitesReady()) {
+                dropdown.innerHTML = '<li class="dropdown-empty">Enter your university and major first</li>';
+                dropdown.style.display = 'block';
+                return;
+            }
+
+            if (minorTrackFallback) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            if (minorTrackLoading && !minorTrackData) {
+                dropdown.innerHTML = '<li class="dropdown-loading"><span class="field-spinner" style="display:inline-block;vertical-align:middle;margin-right:0.5rem;"></span> Loading options...</li>';
+                dropdown.style.display = 'block';
+                return;
+            }
+
+            const { popular, allMatches } = filterMinorTrackItems(fieldName, query);
+            const sections = [];
+
+            if (popular.length) {
+                sections.push(`
+                    <li class="dropdown-section">
+                        <div class="dropdown-heading">⭐ Popular for ${majorInput.value.trim()} students</div>
+                        ${popular.map(buildPopularItemMarkup).join('')}
+                    </li>
+                `);
+            }
+
+            sections.push('<li class="dropdown-divider"></li>');
+
+            if (allMatches.length) {
+                sections.push(`
+                    <li class="dropdown-section">
+                        <div class="dropdown-heading">All Available ${label}</div>
+                        ${allMatches.map(buildDropdownItemMarkup).join('')}
+                    </li>
+                `);
+            } else {
+                sections.push('<li class="dropdown-empty">No matches found. You can still type a custom value.</li>');
+            }
+
+            const registrarName = sanitizeAcademicText(universityInput.value.trim(), 80) || 'your university';
+            const noteLine = minorTrackData?.note
+                ? `<br>${minorTrackData.note}`
+                : '';
+            sections.push(`<li class="dropdown-disclaimer">📋 List is AI-generated from catalog signals. Don't see yours? Type it in freely — all selections are valid. Verify final availability with the ${registrarName} registrar.${noteLine}</li>`);
+
+            dropdown.innerHTML = sections.join('');
+            dropdown.style.display = 'block';
+        }
+
+        function renderPopularCallout() {
+            if (minorTrackFallback || !minorTrackData || !minorTrackData.popular_combinations?.length) {
+                hidePopularCallout();
+                return;
+            }
+
+            const combos = minorTrackData.popular_combinations.slice(0, 3);
+            popularCallout.innerHTML = `
+                <div class="popular-callout-header">💡 Popular choices for ${majorInput.value.trim()} students at ${universityInput.value.trim()}:</div>
+                <div class="popular-callout-list">
+                    ${combos.map(buildPopularItemMarkup).join('')}
+                </div>
+            `;
+            popularCallout.style.display = 'block';
+        }
+
+        function handleProgramItemClick(target) {
+            const fieldName = target.dataset.field;
+            const value = target.dataset.value || '';
+            const input = fieldName === 'track' ? trackInput : minorInput;
+            input.value = value;
+            updateClearButton(fieldName);
+            hideProgramDropdown(fieldName);
+            if (fieldName === 'track') {
+                renderPopularCallout();
+            }
+        }
+
+        async function loadMinorTrackOptions() {
+            if (!prerequisitesReady()) return;
+
+            const key = getProgramLoadKey();
+            if (minorTrackLoading && minorTrackLoadedKey === key) return;
+            if (minorTrackData && minorTrackLoadedKey === key) {
+                renderPopularCallout();
+                return;
+            }
+
+            const requestId = ++minorTrackRequestId;
+            minorTrackLoading = true;
+            minorTrackFallback = false;
+            showFieldSpinner('minor', true);
+            showFieldSpinner('track', true);
+            renderMinorTrackDropdown('minor');
+            renderMinorTrackDropdown('track');
+
+            try {
+                const liveContext = await fetchLiveCurriculumContext({
+                    university: universityInput.value.trim(),
+                    major: majorInput.value.trim(),
+                    minor: minorInput.value.trim(),
+                    track: trackInput.value.trim()
+                });
+
+                const result = await callGitHubModelsWithFallback([
+                    {
+                        role: 'system',
+                        content: 'You return concise academic JSON only. No markdown.'
+                    },
+                    {
+                        role: 'user',
+                        content: `Return only valid JSON with this exact schema:\n{\n  "minors": [{ "name": "Minor name", "credits": 18, "popular": true }],\n  "tracks": [{ "name": "Track name", "credits": 12, "popular": true, "description": "One sentence on what this track prepares students for" }],\n  "popular_combinations": [{ "minor_or_track": "Pre-Medicine", "type": "track", "reason": "One sentence explaining why students in this major commonly choose this" }],\n  "note": "Optional clarification"\n}\n\nUniversity: ${universityInput.value.trim()}\nMajor: ${majorInput.value.trim()}\n\nCOMPLETENESS REQUIREMENT - THIS IS CRITICAL:\nThe \"All Available\" lists must represent the full university-wide catalog, not a curated subset that aligns with the selected major. A student can choose ANY minor or track the university offers, regardless of major.\n\nFor minors, return every minor offered across all departments and colleges, including broad options like Accounting, Actuarial Science, African American Studies, Anthropology, Art, Art History, Astronomy, Biology, Business Administration, Chemistry, Communication, Computer Science, Criminal Justice, Data Science, Economics, Education, English, Entrepreneurship, Environmental Science, Film Studies, Finance, French, Geography, German, Health Sciences, History, Hospitality, Human Resources, Information Systems, Journalism, Kinesiology, Linguistics, Management, Marketing, Mathematics, Music, Neuroscience, Nursing, Philosophy, Physics, Political Science, Psychology, Public Health, Religious Studies, Sociology, Spanish, Statistics, Supply Chain Management, Theatre, Women's Studies, and any others offered at this university.\n\nFor tracks, return every pre-professional track, concentration track, and specialized pathway across all colleges, not just those related to the declared major. Include pre-medicine, pre-dental, pre-pharmacy, pre-law, pre-optometry, pre-veterinary, pre-physical therapy, pre-physician assistant when offered.\n\nDO NOT filter the full list based on major. Major only affects popular=true flags and popular_combinations.\nIf uncertain whether a minor/track exists, include it and use the top-level \"note\" field rather than omitting. Over-include and let the student verify.\n\nReturn comprehensive minors and tracks available at this university. If exact offerings cannot be confidently confirmed, return the most common options for this type of institution and include note: \"Verify current offerings at ${universityInput.value.trim()} registrar\".\n\nLive context:\n${liveContext || 'Unavailable'}`
+                    }
+                ], {
+                    maxRetriesPerModel: 1,
+                    baseDelayMs: 500,
+                    timeoutMs: 25000,
+                    maxTokens: 3000,
+                    temperature: 0.15
+                });
+
+                if (requestId !== minorTrackRequestId) return;
+
+                const payload = JSON.parse(extractAssistantText(result));
+                const minors = normalizeProgramList(payload.minors, 'minor');
+                const tracks = normalizeProgramList(payload.tracks, 'track');
+                const popularCombinations = (Array.isArray(payload.popular_combinations) ? payload.popular_combinations : [])
+                    .map(normalizePopularCombination)
+                    .filter(Boolean);
+
+                if (!minors.length && !tracks.length) {
+                    throw new Error('No program options returned');
+                }
+
+                minorTrackData = {
+                    minors,
+                    tracks,
+                    popular_combinations: popularCombinations,
+                    note: sanitizeAcademicText(payload.note, 220)
+                };
+                minorTrackLoadedKey = key;
+                minorTrackLoading = false;
+                minorInput.placeholder = "Search or type any minor — list may not be exhaustive";
+                trackInput.placeholder = "Search or type any track — list may not be exhaustive";
+                showFieldSpinner('minor', false);
+                showFieldSpinner('track', false);
+                renderMinorTrackDropdown('minor');
+                renderMinorTrackDropdown('track');
+                renderPopularCallout();
+            } catch (err) {
+                if (requestId !== minorTrackRequestId) return;
+                minorTrackLoading = false;
+                minorTrackFallback = true;
+                minorTrackData = null;
+                hideProgramDropdown('minor');
+                hideProgramDropdown('track');
+                hidePopularCallout();
+                showFieldSpinner('minor', false);
+                showFieldSpinner('track', false);
+            }
+        }
+
+        function scheduleMinorTrackLoad() {
+            if (!prerequisitesReady()) return;
+            window.clearTimeout(minorTrackPrefetchTimer);
+            minorTrackPrefetchTimer = window.setTimeout(() => {
+                loadMinorTrackOptions();
+            }, 0);
+        }
 
         function showUniversityDropdown(names) {
             if (!names.length) { universityDropdown.style.display = 'none'; return; }
@@ -699,10 +1782,19 @@
             universityDropdown.style.display = 'block';
         }
 
+        function showUniversityPrompt() {
+            universityDropdown.innerHTML = '<li class="dropdown-empty">Type at least 3 letters to search universities</li>';
+            universityDropdown.style.display = 'block';
+        }
+
         universityInput.addEventListener('input', (e) => {
+            invalidateMinorTrackData();
             clearTimeout(debounceTimer);
             const query = e.target.value.trim();
-            if (query.length < 3) { universityDropdown.style.display = 'none'; return; }
+            if (query.length < 3) {
+                showUniversityPrompt();
+                return;
+            }
 
             debounceTimer = setTimeout(async () => {
                 try {
@@ -717,6 +1809,22 @@
             }, 300);
         });
 
+        universityInput.addEventListener('focus', () => {
+            if (uniResults.length) {
+                showUniversityDropdown(uniResults);
+            } else {
+                showUniversityPrompt();
+            }
+        });
+
+        universityInput.addEventListener('click', () => {
+            if (uniResults.length) {
+                showUniversityDropdown(uniResults);
+            } else {
+                showUniversityPrompt();
+            }
+        });
+
         universityDropdown.addEventListener('mousedown', (e) => {
             const li = e.target.closest('.major-option');
             if (!li) return;
@@ -724,14 +1832,10 @@
             universityDropdown.style.display = 'none';
             // Trigger major load for chosen university
             loadMajorsForUniversity(li.dataset.value);
+            invalidateMinorTrackData();
         });
 
         // ── Custom Major Autocomplete ──────────────────────────────────────
-        const majorInput = document.getElementById('major');
-        const majorDropdown = document.getElementById('major-dropdown');
-        let allMajors = [];
-        let majorLoaded = false;
-
         function showMajorDropdown(filter) {
             const query = filter.toLowerCase().trim();
             const matches = query
@@ -751,10 +1855,15 @@
         majorInput.addEventListener('input', () => {
             if (!majorLoaded) return;
             showMajorDropdown(majorInput.value);
+            invalidateMinorTrackData();
         });
 
         majorInput.addEventListener('focus', () => {
             if (majorLoaded && majorInput.value.length === 0) showMajorDropdown('');
+        });
+
+        majorInput.addEventListener('blur', () => {
+            scheduleMinorTrackLoad();
         });
 
         majorDropdown.addEventListener('mousedown', (e) => {
@@ -762,6 +1871,8 @@
             if (!li) return;
             majorInput.value = li.dataset.value;
             hideMajorDropdown();
+            invalidateMinorTrackData();
+            scheduleMinorTrackLoad();
         });
 
         // Single unified outside-click handler closes both dropdowns
@@ -772,9 +1883,101 @@
             if (!majorInput.contains(e.target) && !majorDropdown.contains(e.target)) {
                 hideMajorDropdown();
             }
+            if (!minorInput.contains(e.target) && !minorDropdown.contains(e.target)) {
+                hideProgramDropdown('minor');
+            }
+            if (!trackInput.contains(e.target) && !trackDropdown.contains(e.target)) {
+                hideProgramDropdown('track');
+            }
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            const programOption = e.target.closest('.dropdown-item, .popular-callout-btn');
+            if (!programOption) return;
+            e.preventDefault();
+            handleProgramItemClick(programOption);
+        });
+
+        [minorInput, trackInput].forEach((input, index) => {
+            const fieldName = index === 0 ? 'minor' : 'track';
+            input.addEventListener('focus', () => {
+                if (!prerequisitesReady()) {
+                    setTemporaryPlaceholder(input, 'Enter your university and major first');
+                    return;
+                }
+                if (minorTrackFallback) return;
+                if (!minorTrackData && !minorTrackLoading) {
+                    loadMinorTrackOptions();
+                }
+                renderMinorTrackDropdown(fieldName);
+            });
+            input.addEventListener('click', () => {
+                if (!prerequisitesReady()) {
+                    setTemporaryPlaceholder(input, 'Enter your university and major first');
+                    return;
+                }
+                if (minorTrackFallback) return;
+                if (!minorTrackData && !minorTrackLoading) {
+                    loadMinorTrackOptions();
+                }
+                renderMinorTrackDropdown(fieldName);
+            });
+            input.addEventListener('input', () => {
+                updateClearButton(fieldName);
+                if (!prerequisitesReady() || minorTrackFallback) return;
+                if (!minorTrackData && !minorTrackLoading) {
+                    scheduleMinorTrackLoad();
+                }
+                renderMinorTrackDropdown(fieldName);
+            });
+            input.addEventListener('blur', () => updateClearButton(fieldName));
+        });
+
+        minorClearBtn.addEventListener('click', () => {
+            minorInput.value = '';
+            updateClearButton('minor');
+            if (prerequisitesReady() && !minorTrackFallback) renderMinorTrackDropdown('minor');
+            minorInput.focus();
+        });
+
+        trackClearBtn.addEventListener('click', () => {
+            trackInput.value = '';
+            updateClearButton('track');
+            if (prerequisitesReady() && !minorTrackFallback) renderMinorTrackDropdown('track');
+            trackInput.focus();
+        });
+
+        universityInput.addEventListener('blur', () => {
+            scheduleMinorTrackLoad();
+        });
+
+        majorInput.addEventListener('change', () => {
+            invalidateMinorTrackData();
+            scheduleMinorTrackLoad();
+        });
+
+        universityInput.addEventListener('change', () => {
+            invalidateMinorTrackData();
+            scheduleMinorTrackLoad();
         });
 
         async function loadMajorsForUniversity(uniName) {
+            const requestId = ++majorRequestId;
+            let settled = false;
+
+            const useFallbackMajors = () => {
+                if (settled || requestId !== majorRequestId) return;
+                settled = true;
+                allMajors = [...COMMON_MAJORS].sort();
+                majorLoaded = true;
+                majorInput.placeholder = 'Showing common majors, or type your own';
+                majorInput.disabled = false;
+                if (document.activeElement === universityInput || document.activeElement === majorInput) {
+                    majorInput.focus();
+                    showMajorDropdown('');
+                }
+            };
+
             majorLoaded = false;
             allMajors = [];
             majorInput.value = '';
@@ -782,34 +1985,73 @@
             majorInput.disabled = true;
             hideMajorDropdown();
 
+            const fallbackTimer = setTimeout(useFallbackMajors, 6500);
+
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ role: 'user', parts: [{ text: `List a comprehensive set of 80 to 100 undergraduate majors offered at ${uniName}. Return ONLY a JSON array of strings. No markdown.` }] }],
-                        generationConfig: {
-                            maxOutputTokens: 2048,
-                            responseMimeType: "application/json",
-                            responseSchema: { type: "ARRAY", items: { type: "STRING" } }
-                        }
-                    })
+                const context = await fetchLiveCurriculumContext({
+                    university: uniName,
+                    major: '',
+                    minor: '',
+                    track: ''
                 });
-                if (!res.ok) throw new Error('API Error');
-                const result = await res.json();
-                let text = result.candidates[0].content.parts[0].text;
-                const s = text.indexOf('['), e2 = text.lastIndexOf(']');
-                if (s !== -1 && e2 !== -1) text = text.substring(s, e2 + 1);
-                allMajors = JSON.parse(text).sort();
+
+                const primaryResult = await callGitHubModelsWithFallback([
+                    {
+                        role: 'system',
+                        content: 'You return concise academic data only. No markdown.'
+                    },
+                    {
+                        role: 'user',
+                        content: `List a comprehensive set of 80 to 100 undergraduate majors offered at ${uniName}. Return ONLY a JSON array of strings. Prioritize official catalog/registrar evidence from the source context. If evidence is partial, still return likely majors but favor catalog-confirmed names.\n\nSource context:\n${context || 'Unavailable'}`
+                    }
+                ], {
+                    maxRetriesPerModel: 1,
+                    baseDelayMs: 600,
+                    timeoutMs: 20000,
+                    maxTokens: 1536,
+                    temperature: 0.1
+                });
+
+                let majorList;
+                try {
+                    const primaryText = extractAssistantText(primaryResult);
+                    majorList = extractStringArrayFromText(primaryText);
+                } catch {
+                    const fallbackResult = await callGitHubModelsWithFallback([
+                        {
+                            role: 'system',
+                            content: 'Return only plain text list output. No markdown.'
+                        },
+                        {
+                            role: 'user',
+                            content: `Return 40 to 60 likely undergraduate majors at ${uniName}. Output one major per line. No numbering, no commentary. Prefer catalog-confirmed names from source context.\n\nSource context:\n${context || 'Unavailable'}`
+                        }
+                    ], {
+                        maxRetriesPerModel: 1,
+                        baseDelayMs: 600,
+                        timeoutMs: 20000,
+                        maxTokens: 1024,
+                        temperature: 0.2
+                    });
+
+                    const fallbackText = extractAssistantText(fallbackResult);
+                    majorList = extractStringArrayFromText(fallbackText);
+                }
+
+                if (requestId !== majorRequestId) return;
+                clearTimeout(fallbackTimer);
+                allMajors = [...new Set(majorList.map(item => item.trim()).filter(Boolean))].sort();
+                if (!allMajors.length) throw new Error('No majors returned');
+                settled = true;
                 majorLoaded = true;
                 majorInput.placeholder = `Type to search ${allMajors.length} majors...`;
                 majorInput.disabled = false;
                 majorInput.focus();
                 showMajorDropdown('');
             } catch (err) {
+                clearTimeout(fallbackTimer);
                 console.error('Failed to load majors:', err);
-                majorInput.placeholder = 'Type your major manually';
-                majorInput.disabled = false;
+                useFallbackMajors();
             }
         }
 
@@ -817,6 +2059,218 @@
             const uniName = e.target.value.trim();
             if (uniName.length >= 3) loadMajorsForUniversity(uniName);
         });
+
+        function parseCreditsFromCourse(courseStr) {
+            const match = String(courseStr || '').match(/(\d+(?:\.\d+)?)\s*cr\b/i);
+            return match ? parseFloat(match[1]) : 3;
+        }
+
+        function getCoverageTargets(totalYears, programOptions = {}) {
+            const years = Math.max(1, Number(totalYears) || 4);
+            const terms = Math.max(2, years * 2);
+
+            return {
+                minorMinTagged: programOptions.hasMinor ? Math.max(3, Math.ceil(terms * 0.2)) : 0,
+                trackMinTagged: programOptions.hasTrack ? Math.max(2, Math.ceil(terms * 0.125)) : 0
+            };
+        }
+
+        function evaluateScheduleLoad(schedule, totalYears, programOptions = {}) {
+            const limits = { minCourses: 1, maxCourses: 7, maxCredits: 22 };
+
+            const issues = [];
+            const normalizedSchedule = Array.isArray(schedule) ? schedule : [];
+
+            normalizedSchedule.forEach((yearData, idx) => {
+                const year = yearData?.year || idx + 1;
+                ['fall', 'spring', 'summer'].forEach(term => {
+                    const courses = Array.isArray(yearData?.[term]) ? yearData[term] : [];
+                    const courseCount = courses.length;
+                    const creditTotal = courses.reduce((sum, c) => sum + parseCreditsFromCourse(c), 0);
+
+                    const maxCoursesForTerm = term === 'summer' ? 3 : limits.maxCourses;
+                    if (courseCount > maxCoursesForTerm) {
+                        issues.push(`Year ${year} ${term}: ${courseCount} courses (max ${maxCoursesForTerm})`);
+                    }
+                    if (creditTotal > limits.maxCredits) {
+                        issues.push(`Year ${year} ${term}: ${creditTotal} credits (max ${limits.maxCredits})`);
+                    }
+                });
+            });
+
+            return {
+                valid: issues.length === 0,
+                issues
+            };
+        }
+
+        function evaluateProgramCoverage(schedule, totalYears, programOptions = {}) {
+            const issues = [];
+            const coverageTargets = getCoverageTargets(totalYears, programOptions);
+            const courses = (schedule || []).flatMap(yearData => {
+                const fall = Array.isArray(yearData?.fall) ? yearData.fall : [];
+                const spring = Array.isArray(yearData?.spring) ? yearData.spring : [];
+                const summer = Array.isArray(yearData?.summer) ? yearData.summer : [];
+                return [...fall, ...spring, ...summer].map(item => String(item || '').toLowerCase());
+            });
+
+            const tokenize = (text) => String(text || '')
+                .toLowerCase()
+                .split(/[^a-z0-9]+/)
+                .filter(Boolean);
+
+            const stopWords = new Set([
+                'track', 'minor', 'pathway', 'program', 'concentration', 'studies',
+                'pre', 'and', 'of', 'in', 'for', 'to', 'the'
+            ]);
+
+            const countInferredMatches = (label, fallbackTokens = []) => {
+                const tokens = [...new Set([
+                    ...tokenize(label).filter(token => token.length > 2 && !stopWords.has(token)),
+                    ...fallbackTokens
+                ])];
+
+                if (!tokens.length) return 0;
+
+                return courses.filter(course => tokens.some(token => course.includes(token))).length;
+            };
+
+            if (programOptions.hasMinor) {
+                const minorTaggedCount = courses.filter(c => c.includes('(minor)') || c.includes('minor requirement')).length;
+                const minorInferredCount = countInferredMatches(programOptions.minor);
+                const minorAlignedCount = Math.max(minorTaggedCount, minorInferredCount);
+                const minorRequired = Math.min(1, coverageTargets.minorMinTagged);
+
+                if (minorAlignedCount < minorRequired) {
+                    issues.push(`Minor coverage too low (${minorAlignedCount} aligned courses, need at least ${minorRequired}).`);
+                }
+            }
+
+            if (programOptions.hasTrack) {
+                const trackTaggedCount = courses.filter(c => c.includes('(track)') || c.includes('track requirement')).length;
+                const normalizedTrack = String(programOptions.track || '').toLowerCase();
+                const heuristicTokens = [];
+
+                if (normalizedTrack.includes('pre-med') || normalizedTrack.includes('medicine')) {
+                    heuristicTokens.push('biology', 'chemistry', 'biochemistry', 'anatomy', 'physiology');
+                }
+                if (normalizedTrack.includes('pre-law') || normalizedTrack.includes('law')) {
+                    heuristicTokens.push('law', 'legal', 'policy', 'ethics', 'government');
+                }
+                if (normalizedTrack.includes('pre-dental') || normalizedTrack.includes('dental')) {
+                    heuristicTokens.push('biology', 'chemistry', 'anatomy', 'microbiology');
+                }
+                if (normalizedTrack.includes('pre-pharmacy') || normalizedTrack.includes('pharmacy')) {
+                    heuristicTokens.push('chemistry', 'biochemistry', 'pharmacology', 'biology');
+                }
+
+                const trackInferredCount = countInferredMatches(programOptions.track, heuristicTokens);
+                const trackAlignedCount = Math.max(trackTaggedCount, trackInferredCount);
+                const trackRequired = Math.min(1, coverageTargets.trackMinTagged);
+
+                if (trackAlignedCount < trackRequired) {
+                    issues.push(`Track coverage too low (${trackAlignedCount} aligned courses, need at least ${trackRequired}).`);
+                }
+            }
+
+            return {
+                valid: issues.length === 0,
+                issues
+            };
+        }
+
+        function isValidCourseString(course) {
+            const value = String(course || '').trim();
+            if (!value) return false;
+            if (value === 'Open Elective — See electives tab - 3 cr') return true;
+            return /.+\([A-Z&]{2,}\s*\d{3}[A-Z]?\)\s*-\s*\d+(?:\.\d+)?\s*cr$/i.test(value);
+        }
+
+        function evaluatePlanContract(plan, totalYears) {
+            const issues = [];
+            const years = Number(totalYears) || 4;
+
+            if (!plan || typeof plan !== 'object') {
+                return { valid: false, issues: ['Response is not a valid JSON object.'] };
+            }
+
+            const requiredArrayFields = ['schedule', 'electives', 'organizations', 'career_fairs', 'professional_exams', 'advisor_tips'];
+            requiredArrayFields.forEach(field => {
+                if (!Array.isArray(plan[field])) {
+                    issues.push(`Missing required array field: ${field}`);
+                }
+            });
+
+            if (!Array.isArray(plan.schedule)) {
+                return { valid: false, issues: issues.length ? issues : ['Missing schedule array.'] };
+            }
+
+            if (plan.schedule.length !== years) {
+                issues.push(`Schedule length ${plan.schedule.length} does not match timeline ${years}.`);
+            }
+
+            (plan.schedule || []).forEach((yearData, idx) => {
+                const year = yearData?.year || idx + 1;
+                ['fall', 'spring', 'summer'].forEach(term => {
+                    if (!Array.isArray(yearData?.[term])) {
+                        issues.push(`Year ${year} missing ${term} array.`);
+                        return;
+                    }
+                    if (term === 'summer' && yearData[term].length > 3) {
+                        issues.push(`Year ${year} summer: ${yearData[term].length} courses (max 3).`);
+                    }
+                    yearData[term].forEach(item => {
+                        if (Array.isArray(item)) {
+                            issues.push(`Year ${year} ${term}: nested arrays are not allowed.`);
+                            return;
+                        }
+                        if (typeof item !== 'string') {
+                            issues.push(`Year ${year} ${term}: course entries must be strings.`);
+                            return;
+                        }
+                        if (!isValidCourseString(item)) {
+                            issues.push(`Year ${year} ${term}: invalid course format "${String(item).slice(0, 60)}"`);
+                        }
+                    });
+                });
+            });
+
+            (plan.electives || []).forEach((e, idx) => {
+                if (typeof e?.credits !== 'number' || Number.isNaN(e.credits)) {
+                    issues.push(`Elective ${idx + 1}: credits must be numeric.`);
+                }
+            });
+
+            if (Array.isArray(plan.electives) && plan.electives.length < 8) {
+                issues.push(`Electives too few (${plan.electives.length}, min 8).`);
+            }
+            if (Array.isArray(plan.organizations) && plan.organizations.length < 5) {
+                issues.push(`Organizations too few (${plan.organizations.length}, min 5).`);
+            }
+            if (Array.isArray(plan.organizations)) {
+                const allowedTypes = new Set(['club', 'professional', 'honor society', 'volunteer']);
+                plan.organizations.forEach((org, idx) => {
+                    const orgType = String(org?.type || '').toLowerCase().trim();
+                    if (!allowedTypes.has(orgType)) {
+                        issues.push(`Organization ${idx + 1}: type must be one of club, professional, honor society, volunteer.`);
+                    }
+                });
+            }
+            if (Array.isArray(plan.career_fairs) && plan.career_fairs.length < 2) {
+                issues.push(`Career fairs too few (${plan.career_fairs.length}, min 2).`);
+            }
+            if (Array.isArray(plan.professional_exams) && plan.professional_exams.length < 1) {
+                issues.push(`Professional exams too few (${plan.professional_exams.length}, min 1).`);
+            }
+            if (Array.isArray(plan.advisor_tips) && plan.advisor_tips.length < 6) {
+                issues.push(`Advisor tips too few (${plan.advisor_tips.length}, min 6).`);
+            }
+
+            return {
+                valid: issues.length === 0,
+                issues
+            };
+        }
 
         // Timeline selection
         timelineBtns.forEach(btn => {
@@ -828,12 +2282,20 @@
         });
 
         // Tab switching
-        window.switchTab = function(tabId) {
+        window.switchTab = function(tabId, clickedBtn = null) {
+            const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            const activeBtn = clickedBtn || tabButtons.find(btn => {
+                const onClick = btn.getAttribute('onclick') || '';
+                return onClick.includes(`'${tabId}'`) || onClick.includes(`\"${tabId}\"`);
+            });
+
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const content = document.getElementById(`tab-${tabId}`);
+            if (content) content.classList.add('active');
         };
 
         // Form Submission
@@ -841,11 +2303,11 @@
             e.preventDefault();
             
             const formData = {
-                university: document.getElementById('university').value,
-                major: document.getElementById('major').value,
-                minor: document.getElementById('minor').value,
-                track: document.getElementById('track').value,
-                notes: document.getElementById('notes').value,
+                university: document.getElementById('university').value.trim(),
+                major: document.getElementById('major').value.trim(),
+                minor: document.getElementById('minor').value.trim(),
+                track: document.getElementById('track').value.trim(),
+                notes: document.getElementById('notes').value.trim(),
                 years: selectedYears
             };
 
@@ -886,118 +2348,267 @@
         });
 
         async function generatePlan(data) {
+            const programOptions = getProgramOptions(data);
+            const coverageTargets = getCoverageTargets(data.years, programOptions);
+            const liveCurriculumContext = await fetchLiveCurriculumContext(data);
             let scheduleSchemaStr = "";
             for (let i = 1; i <= data.years; i++) {
                 scheduleSchemaStr += `    {
       "year": ${i},
-      "fall": ["Course Name (DEPT 101) - 3 cr", "..."],
-      "spring": ["Course Name (DEPT 102) - 3 cr", "..."]
+        "fall": ["Course Name (DEPT 101) - 3 cr", "..."],
+        "spring": ["Course Name (DEPT 102) - 3 cr", "..."],
+        "summer": []
     }${i < data.years ? ',' : ''}\n`;
             }
 
-            const systemPrompt = `You are an expert academic advisor for university students.
-Your task is to generate a highly realistic, comprehensive academic plan based on the user's inputs. Use Google Search to find the specific courses and curriculum information for the given university and major.
+            const systemPrompt = `You are an expert university academic advisor with access to current university course catalogs. Return ONLY a valid JSON object matching the schema provided. No markdown, no explanation, and no text outside the JSON.
 
-CRITICAL INSTRUCTIONS:
-1. Return ONLY raw JSON. No markdown formatting, no backticks, no preamble, no explanations.
-2. The JSON must exactly match the schema provided below. DO NOT wrap the schema in any parent object. The root of the JSON MUST be the object containing "schedule", "electives", etc.
-3. Generate exactly ${data.years} years of schedule. It is CRITICAL that the schedule array has exactly ${data.years} items.
-4. Each semester must have 4-6 courses, totaling 15-18 credit hours.
-5. Use realistic course codes matching the university and major (e.g., BIO 101, CHEM 201) by referencing real degree maps found via search.
-6. Weave general education/core requirements naturally throughout all years. Explicitly label them with "(Gen-Ed)" or "(Core)" in the string.
-7. Mark elective slots EXACTLY as: "Open Elective — See electives tab - 3 cr".
-8. Provide at least 8 elective options.
-9. Provide 5-8 organizations. Valid types: club, professional, honor society, volunteer.
-10. Provide 2-4 career fairs.
-11. Provide all relevant professional exams for the track (MCAT, LSAT, GRE, etc.). If none are strictly required, provide general grad school or industry certifications.
-12. Provide 6-10 personalized advisor tips.
-13. If a minor is provided, integrate its courses into the schedule.
-14. Honor any additional notes (study abroad, double major, etc.).
+SCHEDULING PHILOSOPHY — GRADUATION FIRST:
+1. Ensure the student completes all degree requirements within the chosen timeline.
+2. Respect prerequisite chains. Always place prerequisites before dependent courses, even if semester loads become uneven.
+    3. COURSE AVAILABILITY IS AUTHORITATIVE: use the university's official catalog/registrar conventions when possible. If a course offering semester cannot be confirmed, state this in advisor_tips and tell the student to verify before registration.
+    4. Distribute course load roughly evenly where prerequisites and availability allow. Middle semesters should aim around 15 credits when possible.
+    5. Maximum credit load per semester is 22 credits.
+    6. Final semesters can be light. A final semester with 1, 2, or 3 courses is valid and must not be padded.
+    7. Never invent filler or placeholder courses to pad credit counts.
+    8. Never fail to produce a complete schedule.
+    9. For any semester with 1-2 courses, add an advisor_tip explaining why it is light.
+    10. If any course was constrained by confirmed availability, note it in advisor_tips.
 
-SCHEMA:
+    SUMMER SEMESTERS:
+    11. Every year object must include fall, spring, and summer arrays.
+    12. Place a course in summer only when it is reasonably likely for summer session at this university; otherwise leave summer empty.
+    13. Summer is capped at 3 courses maximum.
+    14. Summer is generally best for gen-eds, intro courses, standalone labs, and on-track support courses.
+    15. Avoid packing difficult upper-division major requirements into summer unless notes indicate comfort with accelerated summer coursework.
+    16. Add advisor_tips for summer placements and any uncertainty.
+
+    TIMELINE HONESTY:
+    17. If the requested timeline is likely unrealistic given credits, prerequisite depth, and 22-credit cap, explicitly say so in advisor_tips and suggest the next achievable timeline.
+    18. Adding minors/tracks increases total credits; mention when this pressures the timeline.
+    19. Never produce any semester above 22 credits to force timeline fit.
+
+OUTPUT RULES:
+    20. Generate exactly ${data.years} years of schedule. The schedule array must contain exactly ${data.years} items.
+    21. Every schedule year object MUST include fall, spring, and summer arrays. Use [] when a semester has no courses.
+    22. Every course string MUST follow: "Course Name (DEPT 000) - 0 cr".
+    23. Never nest arrays inside semester arrays.
+    24. Mark elective slots exactly as: "Open Elective — See electives tab - 3 cr".
+    25. Weave gen-ed/core requirements naturally and front-load when possible.
+    26. Provide at least 8 electives, 5-8 organizations, 2-4 career fairs, and 6-10 advisor tips.
+    27. If a minor is provided, integrate it and tag with "(Minor)" where appropriate.
+    28. If a track is provided, integrate it and tag with "(Track)" where appropriate.
+    29. Include all relevant professional exams for the declared track/goals:
+    Pre-Medicine -> MCAT and USMLE Steps 1/2/3 post-graduation
+    Pre-Dental -> DAT
+    Pre-Law -> LSAT
+    Pre-Pharmacy -> PCAT
+    Pre-Optometry -> OAT
+    Nursing -> NCLEX-RN
+    Accounting -> CPA Exam
+    Engineering -> FE Exam then PE Exam
+    Graduate school intent -> GRE or GMAT
+    MBA -> GMAT or GRE
+    plus any others clearly relevant.
+    30. If course codes are approximate, add an advisor_tip telling the student to verify exact codes in the official catalog.
+    31. Honor all additional notes provided by the student.
+
+SCHEMA CONTRACT:
+The response MUST be a single JSON object containing ALL of the following top-level keys.
+Omitting any key is a contract violation. Use this as the required shape:
+
 {
-  "schedule": [
-${scheduleSchemaStr}  ],
-  "electives": [
-    { "name": "Course Name (DEPT 200)", "credits": 3, "description": "One-line description" }
-  ],
-  "organizations": [
-    { "name": "Org name", "description": "Why relevant", "type": "club|professional|honor society|volunteer" }
-  ],
-  "career_fairs": [
-    { "name": "Fair name", "timing": "e.g. Fall of Junior Year", "purpose": "Why attend" }
-  ],
-  "professional_exams": [
-    { "name": "Exam name", "timeline": "When to take it", "description": "What it is", "prep_time": "Typical prep duration" }
-  ],
-  "advisor_tips": ["Tip 1", "Tip 2"]
-}`;
+    "schedule": [
+        {
+            "year": 1,
+            "fall": [
+                "Course Name (DEPT 101) - 3 cr",
+                "Course Name (DEPT 102) - 4 cr"
+            ],
+            "spring": [
+                "Course Name (DEPT 103) - 3 cr",
+                "Course Name (DEPT 104) - 3 cr"
+            ],
+            "summer": [
+                "Course Name (DEPT 105) - 3 cr"
+            ]
+        }
+    ],
+    "electives": [
+        { "name": "Course Name (DEPT 200)", "credits": 3, "description": "One-line description." }
+    ],
+    "organizations": [
+        { "name": "Org name", "description": "Why relevant to this major/track.", "type": "club|professional|honor society|volunteer" }
+    ],
+    "career_fairs": [
+        { "name": "Fair name", "timing": "e.g. Fall of Year 2", "purpose": "Why the student should attend." }
+    ],
+    "professional_exams": [
+        { "name": "Exam name", "timeline": "When to take it", "description": "What it is and why it matters for this student.", "prep_time": "Typical prep duration" }
+    ],
+    "advisor_tips": [
+        "Tip as a plain string.",
+        "Another tip as a plain string."
+    ]
+}
 
-            const userPrompt = `Please create a ${data.years}-year academic plan for a student at ${data.university} majoring in ${data.major}.
-Minor: ${data.minor || 'None'}
-Track: ${data.track || 'None'}
-Additional Notes: ${data.notes || 'None'}
+REQUIRED COUNTS - the response must meet all of these minimums:
+- "schedule": exactly N year objects where N is the chosen graduation timeline
+- Each year object must have exactly three keys: "fall", "spring", "summer" - use [] if a semester is empty, never omit the key
+- "electives": minimum 8 items
+- "organizations": minimum 5 items
+- "career_fairs": minimum 2 items
+- "professional_exams": minimum 1 item (more if the major/track warrants it)
+- "advisor_tips": minimum 6 items
 
-Remember: ONLY OUTPUT RAW JSON.`;
+Every course string must follow this exact format: "Course Name (DEPT 000) - 0 cr"
+Every elective "credits" value must be a number, not a string.
+Every organization "type" must be one of: club, professional, honor society, volunteer.`;
 
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    systemInstruction: {
-                        parts: [{ text: systemPrompt }]
-                    },
-                    contents: [{
-                        role: 'user',
-                        parts: [{ text: userPrompt }]
-                    }],
-                    tools: [{
-                        googleSearch: {}
-                    }],
-                    generationConfig: {
-                        maxOutputTokens: 8192
+            const coverageConstraintText = `
+32. Minor coverage target: include at least ${coverageTargets.minorMinTagged} courses tagged with "(Minor)" when minor is provided.
+33. Track coverage target: include at least ${coverageTargets.trackMinTagged} courses tagged with "(Track)" when track is provided.
+34. If minor/track is not provided, do not force those tags.
+35. Optimize for earliest graduation inside the chosen timeline while respecting prerequisites and availability.`;
+
+            const webConstraintText = liveCurriculumContext
+                ? `
+LIVE WEB CURRICULUM SNAPSHOT (recent web signals; prioritize official catalog/registrar style sources):
+${liveCurriculumContext}
+
+Use this live snapshot to keep requirements and availability up to date.`
+                : `
+LIVE WEB CURRICULUM SNAPSHOT:
+Unavailable right now. Use conservative standard curriculum patterns and explicitly state uncertainty in advisor_tips.`;
+
+                        const fullSystemPrompt = `${systemPrompt}${coverageConstraintText}${webConstraintText}`;
+
+            const studentContext = buildStudentContext(data);
+            const baseUserPrompt = `Create a ${data.years}-year academic plan using this student profile:\n${studentContext}\n\nReturn ONLY raw JSON and keep it concise and neutral.`;
+
+            const maxAttempts = 2;
+            let lastContractIssues = [];
+            let lastLoadIssues = [];
+            let lastCoverageIssues = [];
+
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+                const retryNote = attempt > 1
+                    ? `\n\nRetry with strict JSON shape, include fall/spring/summer arrays for every year, honor 22-credit max and summer 3-course cap, and optimize earliest feasible graduation within the selected timeline.`
+                    : '';
+
+                let result;
+                try {
+                    result = await callGitHubModelsWithFallback([
+                        {
+                            role: 'system',
+                            content: fullSystemPrompt
+                        },
+                        {
+                            role: 'user',
+                            content: `${baseUserPrompt}${retryNote}`
+                        }
+                    ], {
+                        maxRetriesPerModel: 2,
+                        baseDelayMs: 800,
+                        timeoutMs: 120000,
+                        maxTokens: 3800,
+                        temperature: 0.1
+                    });
+                } catch (err) {
+                    if (!isContentPolicyError(err?.message)) {
+                        throw err;
                     }
-                })
-            });
 
-            if (!response.ok) {
-                const errData = await response.json().catch(() => null);
-                const errMsg = errData?.error?.message || await response.text();
-                throw new Error(`API Error (${response.status}): ${errMsg}`);
-            }
+                    // Retry once with a safer phrasing to reduce false positives in Azure filtering.
+                    const safeSystemPrompt = `${fullSystemPrompt}
+18. Use neutral, school-safe wording and avoid any sensitive, graphic, sexual, violent, political, or medical treatment advice content.
+19. If any requested detail appears sensitive, replace it with a general academic alternative while keeping the schema valid.`;
 
-            const result = await response.json();
-            
-            // Extract the generated text from Gemini's response structure
-            const textContent = result.candidates[0].content.parts[0].text;
-            
-            // Extract JSON to handle any accidental markdown formatting
-            const firstBrace = textContent.indexOf('{');
-            const lastBrace = textContent.lastIndexOf('}');
-            
-            if (firstBrace === -1 || lastBrace === -1) {
-                throw new Error("Failed to parse JSON from AI response.");
-            }
-            
-            const jsonStr = textContent.substring(firstBrace, lastBrace + 1);
-            planData = JSON.parse(jsonStr);
+                    const safeUserPrompt = `Create a ${data.years}-year academic plan using this student profile:\n${studentContext}\n\nReturn ONLY raw JSON and keep it concise and neutral.`;
 
-            // Robust check to ensure planData has the correct root structure
-            if (!planData.schedule || !Array.isArray(planData.schedule)) {
-                let found = false;
-                for (const key in planData) {
-                    if (planData[key] && Array.isArray(planData[key].schedule)) {
-                        planData = planData[key];
-                        found = true;
-                        break;
+                    try {
+                        result = await callGitHubModelsWithFallback([
+                            {
+                                role: 'system',
+                                content: safeSystemPrompt
+                            },
+                            {
+                                role: 'user',
+                                content: `${safeUserPrompt}${retryNote}`
+                            }
+                        ], {
+                            maxRetriesPerModel: 1,
+                            baseDelayMs: 600,
+                            timeoutMs: 120000,
+                            maxTokens: 3800,
+                            temperature: 0.1
+                        });
+                    } catch (safeErr) {
+                        if (isContentPolicyError(safeErr?.message)) {
+                            throw new Error('Request blocked by provider content filtering. Try shorter optional fields, or remove extra notes and regenerate.');
+                        }
+                        throw safeErr;
                     }
                 }
-                if (!found) {
-                    throw new Error("AI response did not contain a valid schedule array. Try regenerating the plan.");
+
+                // Extract model response text
+                const textContent = extractAssistantText(result);
+
+                // Extract JSON to handle any accidental markdown formatting
+                const firstBrace = textContent.indexOf('{');
+                const lastBrace = textContent.lastIndexOf('}');
+
+                if (firstBrace === -1 || lastBrace === -1) {
+                    if (attempt === maxAttempts) {
+                        throw new Error("Failed to parse JSON from AI response.");
+                    }
+                    continue;
                 }
+
+                const jsonStr = textContent.substring(firstBrace, lastBrace + 1);
+                let candidatePlan;
+                try {
+                    candidatePlan = JSON.parse(jsonStr);
+                } catch (err) {
+                    if (attempt === maxAttempts) {
+                        throw new Error("Failed to parse JSON from AI response.");
+                    }
+                    continue;
+                }
+
+                // Robust check to ensure candidatePlan has the correct root structure
+                if (!candidatePlan.schedule || !Array.isArray(candidatePlan.schedule)) {
+                    let found = false;
+                    for (const key in candidatePlan) {
+                        if (candidatePlan[key] && Array.isArray(candidatePlan[key].schedule)) {
+                            candidatePlan = candidatePlan[key];
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        if (attempt === maxAttempts) {
+                            throw new Error("AI response did not contain a valid schedule array. Try regenerating the plan.");
+                        }
+                        continue;
+                    }
+                }
+
+                const contractCheck = evaluatePlanContract(candidatePlan, data.years);
+                const loadCheck = evaluateScheduleLoad(candidatePlan.schedule, data.years, programOptions);
+                const coverageCheck = evaluateProgramCoverage(candidatePlan.schedule, data.years, programOptions);
+                if (contractCheck.valid && loadCheck.valid && coverageCheck.valid) {
+                    planData = candidatePlan;
+                    return;
+                }
+
+                lastContractIssues = contractCheck.issues;
+                lastLoadIssues = loadCheck.issues;
+                lastCoverageIssues = coverageCheck.issues;
             }
+
+            const firstIssue = lastContractIssues[0] || lastLoadIssues[0] || lastCoverageIssues[0] || '';
+            throw new Error(`Generated plan failed validation after retry. ${firstIssue}`.trim());
         }
 
         function getCourseTypeClass(courseStr) {
@@ -1036,6 +2647,7 @@ Remember: ONLY OUTPUT RAW JSON.`;
             let headersHtml = '<div class="matrix-cell empty-cell"></div>';
             let fallHtml = '<div class="matrix-row-label">Fall Semester</div>';
             let springHtml = '<div class="matrix-row-label">Spring Semester</div>';
+            let summerHtml = '<div class="matrix-row-label">Summer Semester</div>';
 
             (planData.schedule || []).forEach(yearData => {
                 const yearLabel = getYearLabel(yearData.year, selectedYears);
@@ -1051,6 +2663,11 @@ Remember: ONLY OUTPUT RAW JSON.`;
                     `<li class="course-item ${getCourseTypeClass(c)}">${c}</li>`
                 ).join('');
                 springHtml += `<div class="matrix-cell"><ul class="course-list">${springCourses}</ul></div>`;
+
+                const summerCourses = (yearData.summer || []).map(c =>
+                    `<li class="course-item ${getCourseTypeClass(c)}">${c}</li>`
+                ).join('');
+                summerHtml += `<div class="matrix-cell"><ul class="course-list">${summerCourses}</ul></div>`;
             });
 
             const numCols = (planData.schedule || []).length;
@@ -1059,6 +2676,7 @@ Remember: ONLY OUTPUT RAW JSON.`;
                     ${headersHtml}
                     ${fallHtml}
                     ${springHtml}
+                    ${summerHtml}
                 </div>
             `;
 
