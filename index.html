@@ -1764,7 +1764,11 @@
 
             debounceTimer = setTimeout(async () => {
                 try {
-                    const res = await fetch(`https://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`);
+                    let res = await fetch(`/.netlify/functions/university-search-proxy?name=${encodeURIComponent(query)}`);
+                    if (!res.ok) {
+                        // Fallback for local static hosting without Netlify Functions.
+                        res = await fetch(`https://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`);
+                    }
                     if (!res.ok) return;
                     const data = await res.json();
                     uniResults = [...new Set(data.map(u => u.name))].slice(0, 10);
