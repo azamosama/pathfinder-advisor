@@ -1312,9 +1312,6 @@
 
             const tokenInfo = getGitHubModelsTokenInfo();
             const runtimeToken = tokenInfo.token;
-            if (!runtimeToken) {
-                throw new Error('Missing GitHub Models token. Run in browser console: localStorage.setItem("GITHUB_MODELS_TOKEN", "YOUR_TOKEN"); then reload.');
-            }
 
             let lastError = 'Unknown API error';
 
@@ -1324,21 +1321,32 @@
                     try {
                         const controller = new AbortController();
                         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-                        response = await fetch(GITHUB_MODELS_ENDPOINT, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${runtimeToken}`,
-                                'api-key': runtimeToken
-                            },
-                            body: JSON.stringify({
-                                model,
-                                messages,
-                                temperature,
-                                max_tokens: maxTokens
-                            }),
-                            signal: controller.signal
-                        });
+                        const requestBody = {
+                            model,
+                            messages,
+                            temperature,
+                            max_tokens: maxTokens
+                        };
+
+                        if (runtimeToken) {
+                            response = await fetch(GITHUB_MODELS_ENDPOINT, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${runtimeToken}`,
+                                    'api-key': runtimeToken
+                                },
+                                body: JSON.stringify(requestBody),
+                                signal: controller.signal
+                            });
+                        } else {
+                            response = await fetch('/.netlify/functions/github-models-proxy', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(requestBody),
+                                signal: controller.signal
+                            });
+                        }
                         clearTimeout(timeoutId);
                     } catch (err) {
                         const isTimeout = err?.name === 'AbortError';
