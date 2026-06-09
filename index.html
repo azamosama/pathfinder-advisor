@@ -1135,6 +1135,21 @@
                 || text.includes('safety system');
         }
 
+        function extractRateLimitWaitMs(response, message) {
+            const retryAfter = Number(response?.headers?.get('retry-after') || '');
+            if (Number.isFinite(retryAfter) && retryAfter > 0) {
+                return retryAfter * 1000;
+            }
+
+            const text = String(message || '');
+            const match = text.match(/wait\s+(\d+)\s*seconds?/i);
+            if (match) {
+                return Math.max(1000, Number(match[1]) * 1000);
+            }
+
+            return 0;
+        }
+
         function extractStringArrayFromText(text) {
             const raw = String(text || '').trim();
             if (!raw) throw new Error('Empty majors response');
@@ -1312,11 +1327,17 @@
 
             const tokenInfo = getGitHubModelsTokenInfo();
             const runtimeToken = tokenInfo.token;
+            window.__githubModelsCooldownUntil = window.__githubModelsCooldownUntil || 0;
 
             let lastError = 'Unknown API error';
 
             for (const model of models) {
                 for (let attempt = 0; attempt <= maxRetriesPerModel; attempt++) {
+                    const now = Date.now();
+                    if (window.__githubModelsCooldownUntil > now) {
+                        await sleep(window.__githubModelsCooldownUntil - now);
+                    }
+
                     let response;
                     try {
                         const controller = new AbortController();
@@ -1382,7 +1403,19 @@
 
                     lastError = `API Error (${response.status}) [${model}]: ${errMsg}`;
 
+                    if (response.status === 429) {
+                        const waitMs = extractRateLimitWaitMs(response, errMsg);
+                        if (waitMs > 0) {
+                            window.__githubModelsCooldownUntil = Date.now() + waitMs + 500;
+                        }
+                    }
+
                     if (isTransientApiStatus(response.status) && attempt < maxRetriesPerModel) {
+                        if (response.status === 429 && window.__githubModelsCooldownUntil > Date.now()) {
+                            await sleep(window.__githubModelsCooldownUntil - Date.now());
+                            continue;
+                        }
+
                         const jitter = Math.floor(Math.random() * 350);
                         const waitMs = baseDelayMs * Math.pow(2, attempt) + jitter;
                         await sleep(waitMs);
@@ -1395,6 +1428,10 @@
 
             if (String(lastError).toLowerCase().includes('api timeout')) {
                 throw new Error(`${lastError}. The model response took too long. Please retry with shorter notes, or try again in a minute.`);
+            }
+
+            if (String(lastError).includes('API Error (429)')) {
+                throw new Error(`${lastError}. Rate limit reached, so requests were paused automatically. Please retry after about 1 minute.`);
             }
 
             throw new Error(`${lastError}. We retried automatically across multiple GitHub models, but the provider is still unavailable. Please retry in a minute.`);
@@ -1414,6 +1451,7 @@
         let debounceTimer;
         let uniResults = [];
         let majorRequestId = 0;
+        let localUniversityUseHttp = localStorage.getItem('UNIVERSITY_LOOKUP_HTTP') === '1';
 
         const majorInput = document.getElementById('major');
         const majorDropdown = document.getElementById('major-dropdown');
@@ -1764,19 +1802,39 @@
 
             debounceTimer = setTimeout(async () => {
                 try {
-                    let res = await fetch(`/.netlify/functions/university-search-proxy?name=${encodeURIComponent(query)}`);
+                    const isLocalHost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+                    let res;
+
+                    if (isLocalHost) {
+                        // Keep localhost behavior simple and independent of Netlify Functions.
+                        try {
+                            const localEndpoint = localUniversityUseHttp
+                                ? `http://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`
+                                : `https://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`;
+                            res = await fetch(localEndpoint);
+                        } catch (lookupErr) {
+                            // Some networks block the HTTPS endpoint; HTTP still works on localhost.
+                            res = await fetch(`http://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`);
+                            if (!localUniversityUseHttp) {
+                                const text = String(lookupErr?.message || '').toLowerCase();
+                                if (text.includes('failed to fetch') || text.includes('networkerror')) {
+                                    localUniversityUseHttp = true;
+                                    localStorage.setItem('UNIVERSITY_LOOKUP_HTTP', '1');
+                                }
+                            }
+                        }
+                    } else {
+                        res = await fetch(`/.netlify/functions/university-search-proxy?name=${encodeURIComponent(query)}`);
+                    }
+
                     if (!res.ok) {
-                        const isLocalHost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-                        if (isLocalHost) {
-                            // Fallback for local static hosting without Netlify Functions.
-                            res = await fetch(`https://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`);
-                        } else {
+                        if (!isLocalHost) {
                             universityDropdown.innerHTML = '<li class="dropdown-empty">University search is temporarily unavailable</li>';
                             universityDropdown.style.display = 'block';
                             return;
                         }
+                        return;
                     }
-                    if (!res.ok) return;
                     const data = await res.json();
                     uniResults = [...new Set(data.map(u => u.name))].slice(0, 10);
                     showUniversityDropdown(uniResults);
