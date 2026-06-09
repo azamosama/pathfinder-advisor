@@ -1766,8 +1766,15 @@
                 try {
                     let res = await fetch(`/.netlify/functions/university-search-proxy?name=${encodeURIComponent(query)}`);
                     if (!res.ok) {
-                        // Fallback for local static hosting without Netlify Functions.
-                        res = await fetch(`https://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`);
+                        const isLocalHost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+                        if (isLocalHost) {
+                            // Fallback for local static hosting without Netlify Functions.
+                            res = await fetch(`https://universities.hipolabs.com/search?country=United+States&name=${encodeURIComponent(query)}`);
+                        } else {
+                            universityDropdown.innerHTML = '<li class="dropdown-empty">University search is temporarily unavailable</li>';
+                            universityDropdown.style.display = 'block';
+                            return;
+                        }
                     }
                     if (!res.ok) return;
                     const data = await res.json();
