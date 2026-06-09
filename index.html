@@ -1562,6 +1562,35 @@
             };
         }
 
+        function buildProgramFallbackData(universityName, majorName, reasonText = '') {
+            const fallbackMinors = [
+                'Accounting', 'Business Administration', 'Computer Science', 'Data Science', 'Economics', 'Education',
+                'English', 'Entrepreneurship', 'Finance', 'History', 'Information Systems', 'Journalism', 'Management',
+                'Marketing', 'Mathematics', 'Philosophy', 'Physics', 'Political Science', 'Psychology', 'Public Health',
+                'Sociology', 'Spanish', 'Statistics'
+            ].map(name => ({ name, credits: 18, popular: false, description: '', type: 'minor' }));
+
+            const fallbackTracks = [
+                'Pre-Medicine', 'Pre-Dental', 'Pre-Pharmacy', 'Pre-Law', 'Pre-Physical Therapy', 'Pre-Physician Assistant',
+                'Pre-Veterinary', 'Research Track', 'Leadership Track', 'Global Studies Track'
+            ].map(name => ({ name, credits: 12, popular: false, description: 'Common cross-disciplinary pathway', type: 'track' }));
+
+            const topCombos = [
+                { minor_or_track: 'Data Science', type: 'minor', reason: `Popular complement for ${majorName || 'many majors'} students.` },
+                { minor_or_track: 'Pre-Law', type: 'track', reason: 'Common for students exploring law school pathways.' },
+                { minor_or_track: 'Pre-Medicine', type: 'track', reason: 'Common for health-profession preparation.' }
+            ];
+
+            const note = `Showing common options while live catalog lookup is unavailable for ${universityName || 'this university'}. Type any custom minor/track if needed.${reasonText ? ` (${reasonText})` : ''}`;
+
+            return {
+                minors: fallbackMinors,
+                tracks: fallbackTracks,
+                popular_combinations: topCombos,
+                note
+            };
+        }
+
         function buildDropdownItemMarkup(item) {
             const fillField = item.type === 'track' ? 'track' : 'minor';
             return `
@@ -1760,13 +1789,20 @@
             } catch (err) {
                 if (requestId !== minorTrackRequestId) return;
                 minorTrackLoading = false;
-                minorTrackFallback = true;
-                minorTrackData = null;
-                hideProgramDropdown('minor');
-                hideProgramDropdown('track');
-                hidePopularCallout();
+                minorTrackFallback = false;
+                minorTrackData = buildProgramFallbackData(
+                    universityInput.value.trim(),
+                    majorInput.value.trim(),
+                    sanitizeAcademicText(err?.message, 140)
+                );
+                minorTrackLoadedKey = key;
+                minorInput.placeholder = 'Search or type any minor (fallback list active)';
+                trackInput.placeholder = 'Search or type any track (fallback list active)';
                 showFieldSpinner('minor', false);
                 showFieldSpinner('track', false);
+                renderMinorTrackDropdown('minor');
+                renderMinorTrackDropdown('track');
+                renderPopularCallout();
             }
         }
 
